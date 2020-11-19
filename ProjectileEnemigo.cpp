@@ -14,6 +14,6 @@ void ProjectileEnemigo::update() {
 	animacion->update();
 }
 
-void ProjectileEnemigo::draw(float scrollX) {
-	animacion->draw(x - scrollX, y);
+void ProjectileEnemigo::draw(float scrollX, float scrollY) {
+	animacion->draw(x - scrollX, y - scrollY);
 }

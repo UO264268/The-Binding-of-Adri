@@ -8,6 +8,6 @@ public:
 	Recolectable(float x, float y, Game* game);
 	void update();
 	Animation* animation;
-	void draw(float scrollX) override;
+	void draw(float scrollX, float scrollY) override;
 };
 

@@ -73,8 +73,8 @@ void Alien::impacted() {
 	}
 }
 
-void Alien::draw(float scrollX) {
-	animation->draw(x - scrollX, y);
+void Alien::draw(float scrollX, float scrollY) {
+	animation->draw(x - scrollX, y - scrollY);
 }
 
 ProjectileEnemigo* Alien::shoot() {

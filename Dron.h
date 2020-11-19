@@ -9,7 +9,7 @@ public:
 	Dron(float x, float y, Game* game);
 	void update() override;
 	void impacted() override;
-	void draw(float scrollX) override;
+	void draw(float scrollX, float scrollY) override;
 	ProjectileEnemigo* shoot() override;
 };
 

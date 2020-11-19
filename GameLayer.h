@@ -46,7 +46,9 @@ public:
 	Tile* cup; // Elemento de final de nivel
 	Space* space;
 	float scrollX;
+	float scrollY;
 	int mapWidth;
+	int mapHeight;
 	list<Tile*> tiles;
 
 	Audio* audioBackground;

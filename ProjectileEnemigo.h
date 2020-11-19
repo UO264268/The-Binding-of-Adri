@@ -10,6 +10,6 @@ public:
 	ProjectileEnemigo(float x, float y, Game* game);
 	Animation* animacion;
 	void update();
-	void draw(float scrollX) override;
+	void draw(float scrollX, float scrollY) override;
 };
 

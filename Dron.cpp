@@ -97,6 +97,6 @@ void Dron::impacted() {
 	}
 }
 
-void Dron::draw(float scrollX) {
-	animation->draw(x - scrollX, y);
+void Dron::draw(float scrollX, float scrollY){
+	animation->draw(x - scrollX, y - scrollY);
 }
