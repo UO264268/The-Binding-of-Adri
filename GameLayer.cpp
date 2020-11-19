@@ -538,42 +538,52 @@ void GameLayer::gamePadToControls(SDL_Event event) {
 	// Leer los botones
 	bool buttonA = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_A);
 	bool buttonB = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_B);
+	bool buttonX = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_X);
+	bool buttonY = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_Y);
 	// SDL_CONTROLLER_BUTTON_A, SDL_CONTROLLER_BUTTON_B
 	// SDL_CONTROLLER_BUTTON_X, SDL_CONTROLLER_BUTTON_Y
 	cout << "botones:" << buttonA << "," << buttonB << endl;
 	int stickX = SDL_GameControllerGetAxis(gamePad, SDL_CONTROLLER_AXIS_LEFTX);
+	int stickY = SDL_GameControllerGetAxis(gamePad, SDL_CONTROLLER_AXIS_LEFTY);
 	cout << "stickX" << stickX << endl;
 
 	// Retorna aproximadamente entre [-32800, 32800], el centro debería estar en 0
 	// Si el mando tiene "holgura" el centro varia [-4000 , 4000]
 	if (stickX > 4000) {
 		controlMoveX = 1;
-	}
-	else if (stickX < -4000) {
+	} else if (stickX < -4000) {
 		controlMoveX = -1;
-	}
-	else {
+	} else {
 		controlMoveX = 0;
 	}
 
-	if (buttonA) {
-		controlShoot = true;
-	}
-	else {
-		controlShoot = false;
+	if (stickY > 4000) {
+		controlMoveY = 1;
+	} else if (stickY < -4000) {
+		controlMoveY = -1;
+	} else {
+		controlMoveY = 0;
 	}
 
-	if (buttonB) {
-		controlMoveY = -1; // Saltar
-	}
-	else {
-		controlMoveY = 0;
+	if (buttonY) {
+		controlShootUp = true;
+	} else if (buttonA) {
+		controlShootDown = true;
+	} else if (buttonX) {
+		controlShootLeft = true;
+	} else if (buttonB) {
+		controlShootRight = true;
+	} else {
+		controlShootRight = false;
+		controlShootLeft = false;
+		controlShootDown = false;
+		controlShootUp = false;
 	}
 }
 
 
 void GameLayer::mouseToControls(SDL_Event event) {
-	// Modificación de coordenadas por posible escalado
+//	// Modificación de coordenadas por posible escalado
 	float motionX = event.motion.x / game->scaleLower;
 	float motionY = event.motion.y / game->scaleLower;
 	// Cada vez que hacen click
@@ -582,54 +592,54 @@ void GameLayer::mouseToControls(SDL_Event event) {
 		if (pad->containsPoint(motionX, motionY)) {
 			pad->clicked = true;
 			// CLICK TAMBIEN TE MUEVE
-			controlMoveX = pad->getOrientationX(motionX);
+//			controlMoveX = pad->getOrientationX(motionX);
 		}
-		if (buttonShoot->containsPoint(motionX, motionY)) {
-			controlShoot = true;
-		}
-		if (buttonJump->containsPoint(motionX, motionY)) {
-			controlMoveY = -1;
-		}
-
+//		if (buttonShoot->containsPoint(motionX, motionY)) {
+//			controlShoot = true;
+//		}
+//		if (buttonJump->containsPoint(motionX, motionY)) {
+//			controlMoveY = -1;
+//		}
+//
 	}
-	// Cada vez que se mueve
-	if (event.type == SDL_MOUSEMOTION) {
-		if (pad->clicked && pad->containsPoint(motionX, motionY)) {
-			controlMoveX = pad->getOrientationX(motionX);
-			// Rango de -20 a 20 es igual que 0
-			if (controlMoveX > -20 && controlMoveX < 20) {
-				controlMoveX = 0;
-			}
-
-		}
-		else {
-			pad->clicked = false; // han sacado el ratón del pad
-			controlMoveX = 0;
-		}
-		if (buttonShoot->containsPoint(motionX, motionY) == false) {
-			controlShoot = false;
-		}
-		if (buttonJump->containsPoint(motionX, motionY) == false) {
-			controlMoveY = 0;
-		}
-
-	}
-	// Cada vez que levantan el click
-	if (event.type == SDL_MOUSEBUTTONUP) {
-		if (pad->containsPoint(motionX, motionY)) {
-			pad->clicked = false;
-			// LEVANTAR EL CLICK TAMBIEN TE PARA
-			controlMoveX = 0;
-		}
-
-		if (buttonShoot->containsPoint(motionX, motionY)) {
-			controlShoot = false;
-		}
-		if (buttonJump->containsPoint(motionX, motionY)) {
-			controlMoveY = 0;
-		}
-
-	}
+//	// Cada vez que se mueve
+//	if (event.type == SDL_MOUSEMOTION) {
+//		if (pad->clicked && pad->containsPoint(motionX, motionY)) {
+//			controlMoveX = pad->getOrientationX(motionX);
+//			// Rango de -20 a 20 es igual que 0
+//			if (controlMoveX > -20 && controlMoveX < 20) {
+//				controlMoveX = 0;
+//			}
+//
+//		}
+//		else {
+//			pad->clicked = false; // han sacado el ratón del pad
+//			controlMoveX = 0;
+//		}
+//		if (buttonShoot->containsPoint(motionX, motionY) == false) {
+//			controlShoot = false;
+//		}
+//		if (buttonJump->containsPoint(motionX, motionY) == false) {
+//			controlMoveY = 0;
+//		}
+//
+//	}
+//	// Cada vez que levantan el click
+//	if (event.type == SDL_MOUSEBUTTONUP) {
+//		if (pad->containsPoint(motionX, motionY)) {
+//			pad->clicked = false;
+//			// LEVANTAR EL CLICK TAMBIEN TE PARA
+//			controlMoveX = 0;
+//		}
+//
+//		if (buttonShoot->containsPoint(motionX, motionY)) {
+//			controlShoot = false;
+//		}
+//		if (buttonJump->containsPoint(motionX, motionY)) {
+//			controlMoveY = 0;
+//		}
+//
+//	}
 }
 
 
