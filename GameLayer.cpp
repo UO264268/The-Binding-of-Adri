@@ -188,13 +188,30 @@ void GameLayer::processControls() {
 		pause = false;
 		controlContinue = false;
 	}
-	if (controlShoot) {
-		Projectile* newProjectile = player->shoot();
+	if (controlShootUp) {
+		Projectile* newProjectile = player->shoot(player->shootUp);
 		if (newProjectile != NULL) {
 			space->addDynamicActor(newProjectile);
 			projectiles.push_back(newProjectile);
 		}
-
+	} else if (controlShootDown) {
+		Projectile* newProjectile = player->shoot(player->shootDown);
+		if (newProjectile != NULL) {
+			space->addDynamicActor(newProjectile);
+			projectiles.push_back(newProjectile);
+		}
+	} else if (controlShootLeft) {
+		Projectile* newProjectile = player->shoot(player->shootLeft);
+		if (newProjectile != NULL) {
+			space->addDynamicActor(newProjectile);
+			projectiles.push_back(newProjectile);
+		}
+	} else if (controlShootRight) {
+		Projectile* newProjectile = player->shoot(player->shootRight);
+		if (newProjectile != NULL) {
+			space->addDynamicActor(newProjectile);
+			projectiles.push_back(newProjectile);
+		}
 	}
 
 	// Eje X
@@ -621,61 +638,75 @@ void GameLayer::keysToControls(SDL_Event event) {
 		int code = event.key.keysym.sym;
 		// Pulsada
 		switch (code) {
-		case SDLK_ESCAPE:
-			game->loopActive = false;
-			break;
-		case SDLK_1:
-			game->scale();
-			break;
-		case SDLK_d: // derecha
-			controlMoveX = 1;
-			break;
-		case SDLK_a: // izquierda
-			controlMoveX = -1;
-			break;
-		case SDLK_w: // arriba
-			controlMoveY = -1;
-			break;
-		case SDLK_s: // abajo
-			controlMoveY = 1;
-			break;
-		case SDLK_SPACE: // dispara
-			controlShoot = true;
-			break;
+			case SDLK_ESCAPE:
+				game->loopActive = false;
+				break;
+			case SDLK_1:
+				game->scale();
+				break;
+			case SDLK_d: // derecha
+				controlMoveX = 1;
+				break;
+			case SDLK_a: // izquierda
+				controlMoveX = -1;
+				break;
+			case SDLK_w: // arriba
+				controlMoveY = -1;
+				break;
+			case SDLK_s: // abajo
+				controlMoveY = 1;
+				break;
+			case SDLK_UP: //disparo arriba
+				controlShootUp = true;
+				break;
+			case SDLK_DOWN: //disparo abajo
+				controlShootDown = true;
+				break;
+			case SDLK_LEFT: //disparo izquierda
+				controlShootLeft = true;
+				break;
+			case SDLK_RIGHT: //disparo derecha
+				controlShootRight = true;
+				break;
 		}
-
-
-	}
-	if (event.type == SDL_KEYUP) {
+	}if (event.type == SDL_KEYUP) {
 		int code = event.key.keysym.sym;
 		// Levantada
 		switch (code) {
-		case SDLK_d: // derecha
-			if (controlMoveX == 1) {
-				controlMoveX = 0;
-			}
-			break;
-		case SDLK_a: // izquierda
-			if (controlMoveX == -1) {
-				controlMoveX = 0;
-			}
-			break;
-		case SDLK_w: // arriba
-			if (controlMoveY == -1) {
-				controlMoveY = 0;
-			}
-			break;
-		case SDLK_s: // abajo
-			if (controlMoveY == 1) {
-				controlMoveY = 0;
-			}
-			break;
-		case SDLK_SPACE: // dispara
-			controlShoot = false;
-			break;
+			case SDLK_d: // derecha
+				if (controlMoveX == 1) {
+					controlMoveX = 0;
+				}
+				break;
+			case SDLK_a: // izquierda
+				if (controlMoveX == -1) {
+					controlMoveX = 0;
+				}
+				break;
+			case SDLK_w: // arriba
+				if (controlMoveY == -1) {
+					controlMoveY = 0;
+				}
+				break;
+			case SDLK_s: // abajo
+				if (controlMoveY == 1) {
+					controlMoveY = 0;
+				}
+				break;
+			case SDLK_UP: //disparo arriba
+				controlShootUp = false;
+				break;
+			case SDLK_DOWN: //disparo abajo
+				controlShootDown = false;
+				break;
+			case SDLK_LEFT: //disparo izquierda
+				controlShootLeft = false;
+				break;
+			case SDLK_RIGHT: //disparo derecha
+				controlShootRight = false;
+				break;
 		}
-
 	}
-
 }
 
+	

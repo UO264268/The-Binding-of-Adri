@@ -9,7 +9,7 @@ class Player : public Actor
 {
 public:
 	Player(float x, float y, Game* game);
-	Projectile* shoot();
+	Projectile* shoot(int direction);
 	void update();
 	void jump();
 	void moveX(float axis);
@@ -34,5 +34,10 @@ public:
 	int shootCadence = 30;
 	int shootTime = 0;
 	void superJump();
+
+	int const shootUp = 1;
+	int const shootDown = 2;
+	int const shootRight = 3;
+	int const shootLeft = 4;
 };
 

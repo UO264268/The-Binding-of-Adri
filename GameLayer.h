@@ -67,10 +67,13 @@ public:
 	list<Recolectable*> recolectables;
 
 	bool controlContinue = false;
-	bool controlShoot = false;
+	bool controlShootUp = false;
+	bool controlShootDown = false;
+	bool controlShootLeft = false;
+	bool controlShootRight = false;
 	int controlMoveY = 0;
 	int controlMoveX = 0;
 
-
+	bool controlShoot = false;
 };
 
