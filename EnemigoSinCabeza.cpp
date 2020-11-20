@@ -83,7 +83,6 @@ void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 	if (shootTime > 0) {
 		shootTime--;
 	}
-
 }
 
 ProjectileEnemigo* EnemigoSinCabeza::shoot() {
@@ -109,7 +108,7 @@ ProjectileEnemigo* EnemigoSinCabeza::shoot() {
 	}
 }
 
-void EnemigoSinCabeza::impacted(int damage) {
+Enemy* EnemigoSinCabeza::impacted(int damage) {
 	if (state != game->stateDying) {
 		if ((vidas - damage) > 0) {
 			state = game->stateHitted;
@@ -121,6 +120,8 @@ void EnemigoSinCabeza::impacted(int damage) {
 			state = game->stateDying;
 		}
 	}
+
+	return NULL;
 }
 
 void EnemigoSinCabeza::draw(float scrollX, float scrollY){

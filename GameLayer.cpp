@@ -343,19 +343,6 @@ void GameLayer::update() {
 	list<Projectile*> deleteProjectiles;
 	list<Tile*> deleteTiles;
 
-	for (auto const& projectile : projectiles) {
-		if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
-
-			bool pInList = std::find(deleteProjectiles.begin(),
-				deleteProjectiles.end(),
-				projectile) != deleteProjectiles.end();
-
-			if (!pInList) {
-				deleteProjectiles.push_back(projectile);
-			}
-		}
-	}
-
 	for (auto const& projectile : projectilesEnemigos) {
 		if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
 
@@ -369,9 +356,21 @@ void GameLayer::update() {
 		}
 	}
 
+	list<Enemy*> newEnemies;
 
 	for (auto const& enemy : enemies) {
 		for (auto const& projectile : projectiles) {
+			if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
+
+				bool pInList = std::find(deleteProjectiles.begin(),
+					deleteProjectiles.end(),
+					projectile) != deleteProjectiles.end();
+
+				if (!pInList) {
+					deleteProjectiles.push_back(projectile);
+				}
+			}
+
 			if (enemy->isOverlap(projectile)) {
 				bool pInList = std::find(deleteProjectiles.begin(),
 					deleteProjectiles.end(),
@@ -381,13 +380,24 @@ void GameLayer::update() {
 					deleteProjectiles.push_back(projectile);
 				}
 
+				Enemy* newEnemy = enemy->impacted();
 
-				enemy->impacted();
+				if (newEnemy != NULL) {
+					newEnemies.push_back(newEnemy);
+				}
+
 				points++;
 				textPoints->content = to_string(points);
 			}
 		}
 	}
+
+	for (auto const& enemy : newEnemies) {
+		space->addDynamicActor(enemy);
+		enemies.push_back(enemy);
+
+	}
+	newEnemies.clear();
 
 	for (auto const& tile : tiles) {
 		for (auto const& projectile : projectiles) {
@@ -462,6 +472,7 @@ void GameLayer::update() {
 		delete delTile;
 	}
 	deleteTiles.clear();
+
 }
 
 void GameLayer::calculateScroll() {

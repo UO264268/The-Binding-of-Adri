@@ -6,7 +6,7 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 	state = game->stateMoving;
 
 	aDying = new Animation("res/enemigo_morir.png", width, height,
-		280, 40, 6, 8, false, game);
+		280, 40, 1, 8, false, game);
 
 	aHitted = new Animation("res/enemigo_hitted.png", width, height,
 		36, 40, 6, 1, false, game);
@@ -85,7 +85,7 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 
 }
 
-void EnemigoBasico::impacted(int damage) {
+Enemy* EnemigoBasico::impacted(int damage) {
 	if (state != game->stateDying) {
 		if ((vidas - damage) > 0) {
 			state = game->stateHitted;
@@ -96,7 +96,18 @@ void EnemigoBasico::impacted(int damage) {
 		else {
 			vidas = 0;
 			state = game->stateDying;
+
+			int a = rand() % 3;
+
+			if (a == 0) {
+				Enemy* enemy = new EnemigoSinCabeza(x, y, game);
+				enemy->y = enemy->y - enemy->height / 2;
+				enemy->state = game->stateMoving;
+				return enemy;
+			}			
 		}
+
+		return NULL;
 	}
 }
 

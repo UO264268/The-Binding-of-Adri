@@ -10,7 +10,7 @@ public:
 	Enemy(string s, float x, float y, float ancho, float alto, Game* game);
 	virtual void draw(float scrollX = 0, float scrollY = 0) override; // Va a sobrescribir
 	virtual void update(float x = 0, float y = 0);
-	virtual void impacted(int damage = 1); // Recibe impacto y pone animación de morir
+	virtual Enemy* impacted(int damage = 1); // Recibe impacto y pone animación de morir
 	virtual ProjectileEnemigo* shoot();
 	float vxIntelligence;
 	float vyIntelligence;

@@ -82,7 +82,7 @@ void Enemy::update(float xPlayer, float yPLayer) {
 	}
 }
 
-void Enemy::impacted(int damage) {
+Enemy* Enemy::impacted(int damage) {
 	if (state != game->stateDying) {
 		if ((vidas - damage) > 0) {
 			state = game->stateHitted;
@@ -94,6 +94,8 @@ void Enemy::impacted(int damage) {
 			state = game->stateDying;
 		}
 	}
+
+	return NULL;
 }
 
 void Enemy::draw(float scrollX, float scrollY) {
