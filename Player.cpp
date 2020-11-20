@@ -3,7 +3,6 @@
 Player::Player(float x, float y, Game* game)
 	: Actor("res/jugador.png", x, y, 35, 35, game) {
 
-	onAir = false;
 	orientation = game->orientationRight;
 	state = game->stateMoving;
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
@@ -33,38 +32,11 @@ Player::Player(float x, float y, Game* game)
 
 
 void Player::update() {
-	// En el aire y moviéndose, PASA a estar saltando
-	if (onAir && state == game->stateMoving) {
-		state = game->stateJumping;
-	}
-	// No está en el aire y estaba saltando, PASA a moverse
-	if (!onAir && state == game->stateJumping) {
-		state = game->stateMoving;
-	}
-
-
 	if (invulnerableTime > 0) {
 		invulnerableTime--;
 	}
 
 	bool endAnimation = animation->update();
-
-	if (collisionDown == true) {
-		onAir = false;
-	}
-	else {
-		onAir = true;
-	}
-
-
-	// Acabo la animación, no sabemos cual
-	if (endAnimation) {
-		// Estaba disparando
-		if (state == game->stateShooting) {
-			state = game->stateMoving;
-		}
-	}
-
 
 	// Establecer orientación
 	if (vx > 0) {
@@ -74,7 +46,6 @@ void Player::update() {
 		orientation = game->orientationLeft;
 	}
 
-
 	// Selección de animación basada en estados
 	if (state == game->stateJumping) {
 		if (orientation == game->orientationRight) {
@@ -82,14 +53,6 @@ void Player::update() {
 		}
 		if (orientation == game->orientationLeft) {
 			animation = aJumpingLeft;
-		}
-	}
-	if (state == game->stateShooting) {
-		if (orientation == game->orientationRight) {
-			animation = aShootingRight;
-		}
-		if (orientation == game->orientationLeft) {
-			animation = aShootingLeft;
 		}
 	}
 	if (state == game->stateMoving) {
@@ -126,30 +89,13 @@ void Player::moveY(float axis) {
 	vy = axis * 3;
 }
 
-Projectile* Player::shoot(int direction) {
+Projectile* Player::shoot() {
 
 	if (shootTime == 0) {
-		state = game->stateShooting;
 		audioShoot->play();
-		aShootingLeft->currentFrame = 0; //"Rebobinar" aniamción
-		aShootingRight->currentFrame = 0; //"Rebobinar" aniamción
 		shootTime = shootCadence;
 		Projectile* projectile = new Projectile(x, y, game);
 		
-		if (direction == this->shootUp) {
-			projectile->vx = 0;
-			projectile->vy = -10;
-		} else if (direction == this->shootDown) {
-			projectile->vx = 0;
-			projectile->vy = 10;
-		} else if (direction == this->shootLeft) {
-			projectile->vx = -10;
-			projectile->vy = 0;
-		} else if (direction == this->shootRight) {
-			projectile->vx = 10;
-			projectile->vy = 0;
-		}
-
 		return projectile;
 	}
 	else {
@@ -168,26 +114,16 @@ void Player::draw(float scrollX, float scrollY) {
 	}
 }
 
-void Player::jump() {
-	if (!onAir) {
-		vy = -16;
-		onAir = true;
-	}
-}
-
-void Player::loseLife() {
+void Player::loseLife(int damage) {
 	if (invulnerableTime <= 0) {
-		if (lifes > 0) {
-			lifes--;
+		if ((lifes-damage) > 0) {
+			lifes = lifes - damage;
 			invulnerableTime = 100;
 			// 100 actualizaciones 
+		}
+		else {
+			lifes = 0;
 		}
 	}
 }
 
-void Player::superJump() {
-	if (!onAir) {
-		vy = -22;
-		onAir = true;
-	}
-}

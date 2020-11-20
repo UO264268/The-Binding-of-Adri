@@ -18,7 +18,7 @@ Enemy::Enemy(string s, float x, float y, float ancho, float alto, Game* game)
 
 }
 
-void Enemy::update() {
+void Enemy::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();
 

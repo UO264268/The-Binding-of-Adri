@@ -1,6 +1,6 @@
-#include "Alien.h"
+#include "EnemigoBasico.h"
 
-Alien::Alien(float x, float y, Game* game)
+EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 	: Enemy("res/enemigo.png", x, y, 36, 40, game) {
 
 	state = game->stateMoving;
@@ -13,12 +13,17 @@ Alien::Alien(float x, float y, Game* game)
 	animation = aMoving;
 
 	vx = 1;
+	vy = 0;
+	
 	vxIntelligence = -1;
+	vyIntelligence = 0;
+
 	vx = vxIntelligence;
+	vy = vyIntelligence;
 
 }
 
-void Alien::update() {
+void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();
 
@@ -30,7 +35,6 @@ void Alien::update() {
 		}
 	}
 
-
 	if (state == game->stateMoving) {
 		animation = aMoving;
 	}
@@ -40,26 +44,28 @@ void Alien::update() {
 
 	// Establecer velocidad
 	if (state != game->stateDying) {
-		// no está muerto y se ha quedado parado
-		if (vx == 0) {
-			vxIntelligence = vxIntelligence * -1;
-			vx = vxIntelligence;
+		if (x > xPlayer) { //Player a la derecha del enemigo
+			vxIntelligence = -1;
 		}
-		if (outRight) {
-			// mover hacia la izquierda vx tiene que ser negativa
-			if (vxIntelligence > 0) {
-				vxIntelligence = vxIntelligence * -1;
-			}
-			vx = vxIntelligence;
+		else if (x < xPlayer) { //Player a la izquierda del enemigo
+			vxIntelligence = 1;
 		}
-		if (outLeft) {
-			// mover hacia la derecha vx tiene que ser positiva
-			if (vxIntelligence < 0) {
-				vxIntelligence = vxIntelligence * -1;
-			}
-			vx = vxIntelligence;
+		else { //Player con la misma x del enemigo
+			vxIntelligence = 0;
 		}
 
+		if (y > yPlayer) { //Player debajo del enemigo
+			vyIntelligence = -1;
+		}
+		else if (y < yPlayer) { //Player arriba del enemigo
+			vyIntelligence = 1;
+		}
+		else { //Player a la misma altura del enemigo
+			vyIntelligence = 0;
+		}
+
+		vx = vxIntelligence;
+		vy = vyIntelligence;
 	}
 	else {
 		vx = 0;
@@ -67,16 +73,16 @@ void Alien::update() {
 
 }
 
-void Alien::impacted() {
+void EnemigoBasico::impacted() {
 	if (state != game->stateDying) {
 		state = game->stateDying;
 	}
 }
 
-void Alien::draw(float scrollX, float scrollY) {
+void EnemigoBasico::draw(float scrollX, float scrollY) {
 	animation->draw(x - scrollX, y - scrollY);
 }
 
-ProjectileEnemigo* Alien::shoot() {
+ProjectileEnemigo* EnemigoBasico::shoot() {
 	return NULL;
 }

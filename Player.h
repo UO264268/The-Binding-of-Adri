@@ -9,16 +9,14 @@ class Player : public Actor
 {
 public:
 	Player(float x, float y, Game* game);
-	Projectile* shoot(int direction);
+	Projectile* shoot();
 	void update();
-	void jump();
 	void moveX(float axis);
 	void moveY(float axis);
 	void draw(float scrollX = 0, float scrollY = 0) override; // Va a sobrescribir
-	void loseLife();
+	void loseLife(int damage);
 	int lifes = 3;
 	int invulnerableTime = 0;
-	bool onAir;
 	int orientation;
 	int state;
 	Animation* aIdleRight;
@@ -33,11 +31,5 @@ public:
 	Audio* audioShoot;
 	int shootCadence = 30;
 	int shootTime = 0;
-	void superJump();
-
-	int const shootUp = 1;
-	int const shootDown = 2;
-	int const shootRight = 3;
-	int const shootLeft = 4;
 };
 

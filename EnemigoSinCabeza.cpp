@@ -1,6 +1,6 @@
-#include "Dron.h"
+#include "EnemigoSinCabeza.h"
 
-Dron::Dron(float x, float y, Game* game)
+EnemigoSinCabeza::EnemigoSinCabeza(float x, float y, Game* game)
 	: Enemy("res/enemy2.png", x, y, 49, 44, game) {
 
 	state = game->stateMoving;
@@ -15,13 +15,18 @@ Dron::Dron(float x, float y, Game* game)
 		2184, 92, 2, 24, true, game);
 	animation = aMoving;
 
-	vx = 2;
-	vxIntelligence = -2;
+	vx = 1;
+	vy = 1;
+
+	vxIntelligence = -1;
+	vyIntelligence = -1;
+
 	vx = vxIntelligence;
+	vy = vyIntelligence;
 
 }
 
-void Dron::update() {
+void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();
 
@@ -46,29 +51,22 @@ void Dron::update() {
 
 	// Establecer velocidad
 	if (state != game->stateDying) {
-		// no está muerto y se ha quedado parado
-		if (vx == 0) {
-			vxIntelligence = vxIntelligence * -1;
-			vx = vxIntelligence;
-		}
-		if (outRight) {
-			// mover hacia la izquierda vx tiene que ser negativa
-			if (vxIntelligence > 0) {
-				vxIntelligence = vxIntelligence * -1;
-			}
-			vx = vxIntelligence;
-		}
-		if (outLeft) {
-			// mover hacia la derecha vx tiene que ser positiva
-			if (vxIntelligence < 0) {
-				vxIntelligence = vxIntelligence * -1;
-			}
-			vx = vxIntelligence;
-		}
+		if (cdCambioDireccion == 0) {
+			vxIntelligence = ((rand() % 3) - 1) * 2;
+			vyIntelligence = ((rand() % 3) - 1) * 2;
 
+			vx = vxIntelligence;
+			vy = vyIntelligence;
+
+			cdCambioDireccion = 25;
+		}
 	}
 	else {
 		vx = 0;
+	}
+
+	if (cdCambioDireccion > 0) {
+		cdCambioDireccion--;
 	}
 
 	if (shootTime > 0) {
@@ -77,12 +75,21 @@ void Dron::update() {
 
 }
 
-ProjectileEnemigo* Dron::shoot() {
+ProjectileEnemigo* EnemigoSinCabeza::shoot() {
 	if (shootTime == 0 && state != game->stateDying && state != game->stateDead) {
 		state = game->stateShooting;
 		aShooting->currentFrame = 0;
 		shootTime = shootCadence;
-		ProjectileEnemigo* projectile = new ProjectileEnemigo(x, y, game);
+
+		int vx = 0;
+		int vy = 0;
+
+		while (vx == 0 && vy == 0) {
+			vx = ((rand() % 3) - 1) * 7;
+			vy = ((rand() % 3) - 1) * 7;
+		}
+		
+		ProjectileEnemigo* projectile = new ProjectileEnemigo(x, y, vx, vy, game);
 
 		return projectile;
 	}
@@ -91,12 +98,12 @@ ProjectileEnemigo* Dron::shoot() {
 	}
 }
 
-void Dron::impacted() {
+void EnemigoSinCabeza::impacted() {
 	if (state != game->stateDying) {
 		state = game->stateDying;
 	}
 }
 
-void Dron::draw(float scrollX, float scrollY){
+void EnemigoSinCabeza::draw(float scrollX, float scrollY){
 	animation->draw(x - scrollX, y - scrollY);
 }

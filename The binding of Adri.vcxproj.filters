@@ -69,13 +69,7 @@
     <ClInclude Include="Game.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Dron.h">
-      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy.h">
-      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
-    </ClInclude>
-    <ClInclude Include="Alien.h">
       <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
     </ClInclude>
     <ClInclude Include="ProjectileEnemigo.h">
@@ -104,6 +98,12 @@
     </ClInclude>
     <ClInclude Include="Space.h">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemigoBasico.h">
+      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemigoSinCabeza.h">
+      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,12 +134,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="Alien.cpp">
-      <Filter>Archivos de origen\Actores\Enemigos</Filter>
-    </ClCompile>
-    <ClCompile Include="Dron.cpp">
-      <Filter>Archivos de origen\Actores\Enemigos</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
@@ -169,6 +163,12 @@
     </ClCompile>
     <ClCompile Include="Space.cpp">
       <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemigoBasico.cpp">
+      <Filter>Archivos de origen\Actores\Enemigos</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemigoSinCabeza.cpp">
+      <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

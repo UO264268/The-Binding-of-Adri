@@ -3,12 +3,16 @@
 #include "Animation.h" 
 #include "Enemy.h"
 
-class Alien : public Enemy
+class EnemigoSinCabeza : public Enemy
 {
 public:
-	Alien(float x, float y, Game* game);
-	void update() override;
+	EnemigoSinCabeza(float x, float y, Game* game);
+	void update(float x = 0, float y = 0) override;
 	void impacted() override;
 	void draw(float scrollX, float scrollY) override;
 	ProjectileEnemigo* shoot() override;
+	int cdCambioDireccion = 0;
 };
+
+
+

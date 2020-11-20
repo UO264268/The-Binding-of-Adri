@@ -11,8 +11,8 @@
 #include "Pad.h"
 #include "recolectable.h";
 
-#include "Alien.h"
-#include "Dron.h"
+#include "EnemigoBasico.h"
+#include "EnemigoSinCabeza.h"
 
 #include "Audio.h"
 #include "Space.h" // importar

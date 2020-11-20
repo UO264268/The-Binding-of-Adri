@@ -7,6 +7,4 @@ Projectile::Projectile(float x, float y, Game* game) :
 }
 
 void Projectile::update() {
-	vy = vy;
-	vx = vx;
 }
