@@ -8,6 +8,9 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 	aDying = new Animation("res/enemigo_morir.png", width, height,
 		280, 40, 6, 8, false, game);
 
+	aHitted = new Animation("res/enemigo_hitted.png", width, height,
+		36, 40, 6, 1, false, game);
+
 	aMoving = new Animation("res/enemigo_movimiento.png", width, height,
 		108, 40, 6, 3, true, game);
 	animation = aMoving;
@@ -21,6 +24,8 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 	vx = vxIntelligence;
 	vy = vyIntelligence;
 
+	vidas = 4;
+
 }
 
 void EnemigoBasico::update(float xPlayer, float yPlayer) {
@@ -33,6 +38,10 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 		if (state == game->stateDying) {
 			state = game->stateDead;
 		}
+
+		if (state == game->stateHitted) {
+			state = game->stateMoving;
+		}
 	}
 
 	if (state == game->stateMoving) {
@@ -40,6 +49,9 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	}
 	if (state == game->stateDying) {
 		animation = aDying;
+	}
+	if (state == game->stateHitted) {
+		animation = aHitted;
 	}
 
 	// Establecer velocidad
@@ -73,9 +85,18 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 
 }
 
-void EnemigoBasico::impacted() {
+void EnemigoBasico::impacted(int damage) {
 	if (state != game->stateDying) {
-		state = game->stateDying;
+		if ((vidas - damage) > 0) {
+			state = game->stateHitted;
+			aHitted->currentFrame = 0;
+			vidas = vidas - damage;
+			// 100 actualizaciones 
+		}
+		else {
+			vidas = 0;
+			state = game->stateDying;
+		}
 	}
 }
 

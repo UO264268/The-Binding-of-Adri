@@ -8,6 +8,9 @@ EnemigoSinCabeza::EnemigoSinCabeza(float x, float y, Game* game)
 	aShooting = new Animation("res/enemy2_animacion_disparo.png", width, height,
 		2560, 128, 2, 20, false, game);
 
+	aHitted = new Animation("res/enemigo_hitted.png", width, height,
+		108, 40, 6, 1, false, game);
+
 	aDying = new Animation("res/enemy2_muerte.png", width, height,
 		1152, 204, 2, 6, false, game);
 
@@ -24,6 +27,7 @@ EnemigoSinCabeza::EnemigoSinCabeza(float x, float y, Game* game)
 	vx = vxIntelligence;
 	vy = vyIntelligence;
 
+	vidas = 2;
 }
 
 void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
@@ -40,6 +44,10 @@ void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 		if (state == game->stateShooting) {
 			state = game->stateMoving;
 		}
+
+		if (state == game->stateHitted) {
+			state = game->stateMoving;
+		}
 	}
 
 	if (state == game->stateMoving) {
@@ -47,6 +55,9 @@ void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 	}
 	if (state == game->stateDying) {
 		animation = aDying;
+	}
+	if (state == game->stateHitted) {
+		animation = aHitted;
 	}
 
 	// Establecer velocidad
@@ -98,9 +109,17 @@ ProjectileEnemigo* EnemigoSinCabeza::shoot() {
 	}
 }
 
-void EnemigoSinCabeza::impacted() {
+void EnemigoSinCabeza::impacted(int damage) {
 	if (state != game->stateDying) {
-		state = game->stateDying;
+		if ((vidas - damage) > 0) {
+			state = game->stateHitted;
+			vidas = vidas - damage;
+			// 100 actualizaciones 
+		}
+		else {
+			vidas = 0;
+			state = game->stateDying;
+		}
 	}
 }
 
