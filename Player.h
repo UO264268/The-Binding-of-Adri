@@ -29,7 +29,7 @@ public:
 	Animation* aShootingLeft;
 	Animation* animation; // Referencia a la animación mostrada
 	Audio* audioShoot;
-	int shootCadence = 30;
+	int shootCadence = 20;
 	int shootTime = 0;
 };
 
