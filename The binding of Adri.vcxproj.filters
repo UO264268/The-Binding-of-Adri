@@ -105,6 +105,9 @@
     <ClInclude Include="EnemigoSinCabeza.h">
       <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
     </ClInclude>
+    <ClInclude Include="EnemigoDispara.h">
+      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -168,6 +171,9 @@
       <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>Archivos de origen\Actores\Enemigos</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemigoDispara.cpp">
       <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
   </ItemGroup>

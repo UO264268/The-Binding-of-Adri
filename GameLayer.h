@@ -13,6 +13,7 @@
 
 #include "EnemigoBasico.h"
 #include "EnemigoSinCabeza.h"
+#include "EnemigoDispara.h"
 
 #include "Audio.h"
 #include "Space.h" // importar

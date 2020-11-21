@@ -89,12 +89,18 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case 'E': {
 		Enemy* enemy = NULL;
 
-		int num = rand() % 2;
+		//int num = rand() % 3;
+
+		int num = 2;
+
 		if (num == 0) {
 			enemy = new EnemigoBasico(x, y, game);
 		}
 		else if (num == 1) {
 			enemy = new EnemigoSinCabeza(x, y, game);
+		}
+		else if (num == 2) {
+			enemy = new EnemigoDispara(x, y, game);
 		}
 
 		// modificación para empezar a contar desde el suelo.
