@@ -25,7 +25,7 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 	vy = vyIntelligence;
 
 	vidas = 4;
-
+	daño = 1;
 }
 
 void EnemigoBasico::update(float xPlayer, float yPlayer) {

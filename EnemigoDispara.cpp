@@ -18,12 +18,6 @@ EnemigoDispara::EnemigoDispara(float x, float y, Game* game)
 	vx = 0;
 	vy = 0;
 
-	vxIntelligence = 0;
-	vyIntelligence = 0;
-
-	vx = vxIntelligence;
-	vy = vyIntelligence;
-
 	vidas = 3;
 
 	jugadorX = 0;
@@ -56,31 +50,11 @@ void EnemigoDispara::update(float xPlayer, float yPlayer) {
 		animation = aHitted;
 	}
 
-	// Establecer velocidad
-	if (state != game->stateDying) {
-		if (cdCambioDireccion == 0) {
-			vxIntelligence = ((rand() % 3) - 1) * 2;
-			vyIntelligence = ((rand() % 3) - 1) * 2;
-
-			vx = vxIntelligence;
-			vy = vyIntelligence;
-
-			cdCambioDireccion = 20;
-		}
-	}
-	else {
-		vx = 0;
-	}
-
 	jugadorX = xPlayer;
 	jugadorY = yPlayer;
 
 	if (shootTime > 0) {
 		shootTime--;
-	}
-
-	if (cdCambioDireccion > 0) {
-		cdCambioDireccion--;
 	}
 }
 
@@ -107,8 +81,6 @@ void EnemigoDispara::draw(float scrollX, float scrollY) {
 
 ProjectileEnemigo* EnemigoDispara::shoot() {
 	if (shootTime == 0 && state != game->stateDying && state != game->stateDead) {
-		state = game->stateShooting;
-		//aShooting->currentFrame = 0;
 		shootTime = shootCadence;
 
 		float distanciaX = abs(jugadorX - x); //a

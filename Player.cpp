@@ -114,7 +114,7 @@ void Player::draw(float scrollX, float scrollY) {
 	}
 }
 
-void Player::loseLife(int damage) {
+void Player::loseLife(float damage) {
 	if (invulnerableTime <= 0) {
 		if ((lifes-damage) > 0) {
 			lifes = lifes - damage;

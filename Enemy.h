@@ -23,4 +23,5 @@ public:
 	int vidas = 1;
 	int shootCadence = 70;
 	int shootTime = 20;
+	float daño = 0.5;
 };

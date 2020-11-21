@@ -89,9 +89,9 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case 'E': {
 		Enemy* enemy = NULL;
 
-		//int num = rand() % 3;
+		int num = rand() % 3;
 
-		int num = 2;
+		//int num = 2;
 
 		if (num == 0) {
 			enemy = new EnemigoBasico(x, y, game);
