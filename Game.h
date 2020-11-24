@@ -53,6 +53,8 @@ public:
 
 	int const orientationRight = 1;
 	int const orientationLeft = 2;
+	int const orientationUp = 3;
+	int const orientationBottom = 4;
 
 	int const bomba = 1;
 	int const corazon = 2;
