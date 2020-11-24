@@ -81,7 +81,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 {
 	switch (character) {
 	case 'C': {
-		cup = new Tile("res/copa.png", x, y, false, false, game);
+		cup = new Tile("res/copa.png", x, y, false, game);
 		// modificación para empezar a contar desde el suelo.
 		cup->y = cup->y - cup->height / 2;
 		space->addDynamicActor(cup); // Realmente no hace falta
@@ -90,7 +90,9 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case 'E': {
 		Enemy* enemy = NULL;
 
-		int num = rand() % 4;
+		//int num = rand() % 4;
+
+		int num = 3;
 
 		if (num == 0) {
 			enemy = new EnemigoBasico(x, y, game);
@@ -119,30 +121,22 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		break;
 	}
 	case '#': {
-		Tile* tile = new Tile("res/bloque_tierra.png", x, y, false, false, game);
+		Tile* tile = new Tile("res/bloque_tierra.png", x, y, false, game);
 		// modificación para empezar a contar desde el suelo.
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
 		space->addStaticActor(tile);
 		break;
 	}
-	case 'R': {
+	case 'r': {
 		Recolectable* recolectable = new Recolectable(x, y, game);
 		recolectable->y = recolectable->y - recolectable->height / 2;
 		recolectables.push_back(recolectable);
 		space->addDynamicActor(recolectable);
 		break;
 	}
-	case 'U': {
-		Tile* tile = new Tile("res/wooden_box.png", x, y, true, false, game);
-		// modificación para empezar a contar desde el suelo.
-		tile->y = tile->y - tile->height / 2;
-		tiles.push_back(tile);
-		space->addStaticActor(tile);
-		break;
-	}
-	case 'Y': {
-		Tile* tile = new Tile("res/bloque_metal.png", x, y, false, true, game);
+	case 'R': {
+		Tile* tile = new Tile("res/wooden_box.png", x, y, true, game);
 		// modificación para empezar a contar desde el suelo.
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
@@ -235,6 +229,14 @@ void GameLayer::processControls() {
 		}
 	}
 
+	if (controlBomba) {
+		Bomba* newBomba = player->ponerBomba();
+		if (newBomba != NULL) {
+			space->addDynamicActor(newBomba);
+			bombas.push_back(newBomba);
+		}
+	}
+
 	// Eje X
 	if (controlMoveX > 0) {
 		player->moveX(1);
@@ -318,11 +320,23 @@ void GameLayer::update() {
 		recolectable->update();
 	}
 
-	list<Explosion*> deleteExplosiones;
+	for (auto const& bomba : bombas) {
+		bomba->update();
+	}
 
 	for (auto const& explosion : explosiones) {
 		explosion->update();
 	}
+
+	for (auto const& bomba : bombas) {
+		Explosion* newExplosion = bomba->explode();
+		if (newExplosion != NULL) {
+			space->addDynamicActor(newExplosion);
+			explosiones.push_back(newExplosion);
+		}
+	}
+
+	list<Explosion*> deleteExplosiones;
 
 	for (auto const& explosion : explosiones) {
 		if (explosion->state == game->stateExploited) {
@@ -346,7 +360,6 @@ void GameLayer::update() {
 			}
 		}
 	}
-
 
 	list<Recolectable*> deleteRecolectables;
 
@@ -390,6 +403,7 @@ void GameLayer::update() {
 
 	list<Projectile*> deleteProjectiles;
 	list<Tile*> deleteTiles;
+	list<Bomba*> deleteBombas;
 
 	for (auto const& projectile : projectilesEnemigos) {
 		if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
@@ -440,7 +454,6 @@ void GameLayer::update() {
 		}
 
 		for (auto const& explosion : explosiones) {
-			cout << "Linea 448: " << explosion->state << endl;
 			if (explosion->state == game->stateExploited) {
 				if (enemy->isOverlap(explosion)) {
 					Enemy* newEnemy = enemy->impacted();
@@ -462,16 +475,6 @@ void GameLayer::update() {
 	for (auto const& tile : tiles) {
 		for (auto const& projectile : projectiles) {
 			if (tile->isOverlap(projectile)){
-				if (tile->desctructibleByShoot) {
-					bool pInList = std::find(deleteTiles.begin(),
-						deleteTiles.end(),
-						tile) != deleteTiles.end();
-
-						if (!pInList) {
-							deleteTiles.push_back(tile);
-						}
-				}
-
 				bool pInList = std::find(deleteProjectiles.begin(),
 					deleteProjectiles.end(),
 					projectile) != deleteProjectiles.end();
@@ -493,8 +496,33 @@ void GameLayer::update() {
 				}
 			}
 		}
+
+		for (auto const& explosion : explosiones) {
+			if (explosion->state == game->stateExploited && tile->isOverlap(explosion)) {
+				if (tile->desctructibleByBomb) {
+					bool pInList = std::find(deleteTiles.begin(),
+						deleteTiles.end(),
+						tile) != deleteTiles.end();
+
+					if (!pInList) {
+						deleteTiles.push_back(tile);
+					}
+				}
+			}
+		}
 	}
 
+	for (auto const& bomba : bombas) {
+		if (bomba->state == game->stateExploited) {
+			bool pInList = std::find(deleteBombas.begin(),
+				deleteBombas.end(),
+				bomba) != deleteBombas.end();
+
+			if (!pInList) {
+				deleteBombas.push_back(bomba);
+			}
+		}
+	}
 
 	for (auto const& enemy : enemies) {
 		if (enemy->state == game->stateDead) {
@@ -561,39 +589,18 @@ void GameLayer::update() {
 	}
 	deleteExplosiones.clear();
 
+	for (auto const& delBomba : deleteBombas) {
+		bombas.remove(delBomba);
+		space->removeDynamicActor(delBomba);
+		delete delBomba;
+	}
+	deleteBombas.clear();
+
 }
 
 void GameLayer::calculateScroll() {
-	//// limite izquierda
-	//if (player->x > WIDTH * 0.3) {
-	//	if (player->x - scrollX < WIDTH * 0.3) {
-	//		scrollX = player->x - WIDTH * 0.3;
-	//	}
-	//}
-
-	//// limite derecha
-	//if (player->x < mapWidth - WIDTH * 0.3) {
-	//	if (player->x - scrollX > WIDTH * 0.7) {
-	//		scrollX = player->x - WIDTH * 0.7;
-	//	}
-	//}
-
-	//// limite arriba
-	if (player->y > HEIGHT * 0.15) {
-		if (player->y - scrollY < HEIGHT * 0.15) {
-			scrollY = player->y - HEIGHT * 0.15;
-		}
-	}
-
-	// limite abajo
-	if (player->y < mapHeight - HEIGHT * 0.15) {
-		if (player->y - scrollY > HEIGHT * 0.85) {
-			scrollY = player->y - HEIGHT * 0.85;
-		}
-	}
-
 	scrollX = 0;
-	//scrollY = 0;
+	scrollY = 0;
 }
 
 
@@ -601,6 +608,7 @@ void GameLayer::draw() {
 	calculateScroll();
 
 	background->draw();
+	
 	for (auto const& tile : tiles) {
 		tile->draw(scrollX, scrollY);
 	}
@@ -610,8 +618,10 @@ void GameLayer::draw() {
 	for (auto const& projectile : projectiles) {
 		projectile->draw(scrollX, scrollY);
 	}
+	
 	cup->draw(scrollX, scrollY);
 	player->draw(scrollX, scrollY);
+
 	for (auto const& enemy : enemies) {
 		enemy->draw(scrollX, scrollY);
 	}
@@ -622,6 +632,10 @@ void GameLayer::draw() {
 
 	for (auto const& explosion : explosiones) {
 		explosion->draw(scrollX, scrollY);
+	}
+
+	for (auto const& bomba : bombas) {
+		bomba->draw(scrollX, scrollY);
 	}
 
 	backgroundPoints->draw();
@@ -787,6 +801,9 @@ void GameLayer::keysToControls(SDL_Event event) {
 			case SDLK_RIGHT: //disparo derecha
 				controlShootRight = true;
 				break;
+			case SDLK_SPACE:
+				controlBomba = true;
+				break;
 		}
 	}if (event.type == SDL_KEYUP) {
 		int code = event.key.keysym.sym;
@@ -823,6 +840,9 @@ void GameLayer::keysToControls(SDL_Event event) {
 				break;
 			case SDLK_RIGHT: //disparo derecha
 				controlShootRight = false;
+				break;
+			case SDLK_SPACE:
+				controlBomba = false;
 				break;
 		}
 	}

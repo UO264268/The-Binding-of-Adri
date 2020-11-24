@@ -79,6 +79,10 @@ void Player::update() {
 		shootTime--;
 	}
 
+	if (bombTime > 0) {
+		bombTime--;
+	}
+
 }
 
 void Player::moveX(float axis) {
@@ -123,6 +127,18 @@ void Player::loseLife(float damage) {
 		else {
 			lifes = 0;
 		}
+	}
+}
+
+Bomba* Player::ponerBomba() {
+	if (bombTime == 0 && bombas > 0) {
+		bombTime = bombCadence;
+		Bomba* bomba = new Bomba(x, y, game);
+		bombas--;
+		return bomba;
+	}
+	else {
+		return NULL;
 	}
 }
 

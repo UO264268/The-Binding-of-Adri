@@ -51,9 +51,6 @@
     <ClInclude Include="Background.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
-    <ClInclude Include="Moneda.h">
-      <Filter>Archivos de encabezado\Actores</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
@@ -117,15 +114,15 @@
     <ClInclude Include="Explosion.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
+    <ClInclude Include="Bomba.h">
+      <Filter>Archivos de encabezado\Actores</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
     <ClCompile Include="Background.cpp">
-      <Filter>Archivos de origen\Actores</Filter>
-    </ClCompile>
-    <ClCompile Include="Moneda.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -189,6 +186,9 @@
       <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
     <ClCompile Include="Explosion.cpp">
+      <Filter>Archivos de origen\Actores</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomba.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
   </ItemGroup>

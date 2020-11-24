@@ -16,6 +16,7 @@
 #include "EnemigoDispara.h"
 #include "MoscaBomba.h"
 #include "Explosion.h"
+#include "Bomba.h"
 
 #include "Audio.h"
 #include "Space.h" // importar
@@ -69,12 +70,14 @@ public:
 	list<ProjectileEnemigo*> projectilesEnemigos;
 	list<Recolectable*> recolectables;
 	list<Explosion*> explosiones;
+	list<Bomba*> bombas;
 
 	bool controlContinue = false;
 	bool controlShootUp = false;
 	bool controlShootDown = false;
 	bool controlShootLeft = false;
 	bool controlShootRight = false;
+	bool controlBomba = false;
 	int controlMoveY = 0;
 	int controlMoveX = 0;
 

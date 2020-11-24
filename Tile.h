@@ -4,8 +4,7 @@
 class Tile : public Actor
 {
 public:
-	Tile(string filename, float x, float y, bool desctructibleByShoot, bool superSalto, Game* game);
-	bool desctructibleByShoot;
-	bool superSalto;
+	Tile(string filename, float x, float y, bool desctructibleByBomb, Game* game);
+	bool desctructibleByBomb;
 };
 
