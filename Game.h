@@ -54,6 +54,6 @@ public:
 	int const orientationRight = 1;
 	int const orientationLeft = 2;
 
-
-
+	int const bomba = 1;
+	int const corazon = 2;
 };

@@ -43,6 +43,12 @@
     <Filter Include="Archivos de origen\Actores\Tiles">
       <UniqueIdentifier>{79bcbcb1-34ff-4d97-aae3-e29e3af6b87b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de origen\Actores\Recolectables">
+      <UniqueIdentifier>{a0eb99da-22c9-4319-9461-6188d4b4f88f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Actores\Recolectable">
+      <UniqueIdentifier>{4fb78d09-47c9-4492-95d4-ff879925a5c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -90,9 +96,6 @@
     <ClInclude Include="Pad.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
-    <ClInclude Include="Recolectable.h">
-      <Filter>Archivos de encabezado\Actores</Filter>
-    </ClInclude>
     <ClInclude Include="Space.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -116,6 +119,12 @@
     </ClInclude>
     <ClInclude Include="Bomba.h">
       <Filter>Archivos de encabezado\Actores</Filter>
+    </ClInclude>
+    <ClInclude Include="Recolectable.h">
+      <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
+    </ClInclude>
+    <ClInclude Include="BombaRecolectable.h">
+      <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +173,6 @@
     <ClCompile Include="Pad.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
-    <ClCompile Include="Recolectable.cpp">
-      <Filter>Archivos de origen\Actores</Filter>
-    </ClCompile>
     <ClCompile Include="Space.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
@@ -190,6 +196,12 @@
     </ClCompile>
     <ClCompile Include="Bomba.cpp">
       <Filter>Archivos de origen\Actores</Filter>
+    </ClCompile>
+    <ClCompile Include="Recolectable.cpp">
+      <Filter>Archivos de origen\Actores\Recolectables</Filter>
+    </ClCompile>
+    <ClCompile Include="BombaRecolectable.cpp">
+      <Filter>Archivos de origen\Actores\Recolectables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

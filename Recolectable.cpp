@@ -16,3 +16,7 @@ void Recolectable::update() {
 void Recolectable::draw(float scrollX, float scrollY) {
 	animation->draw(x - scrollX, y - scrollY);
 }
+
+int Recolectable::recoger() {
+	return 0;
+}

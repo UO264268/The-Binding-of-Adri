@@ -9,7 +9,8 @@
 #include "Text.h"
 #include "Tile.h"
 #include "Pad.h"
-#include "recolectable.h";
+#include "Recolectable.h";
+#include "BombaRecolectable.h"
 
 #include "EnemigoBasico.h"
 #include "EnemigoSinCabeza.h"
@@ -56,15 +57,12 @@ public:
 	list<Tile*> tiles;
 
 	Audio* audioBackground;
-	Text* textPoints;
-	Text* textRecolectable;
-	int points;
-	int recolectable;
-	int newEnemyTime = 0;
+	Text* textBombas;
+	Text* textVidas;
 	Player* player;
 	Background* background;
-	Actor* backgroundPoints;
-	Actor* backgroundRecolectable;
+	Actor* backgroundBombas;
+	Actor* backgroundVidas;
 	list<Enemy*> enemies;
 	list<Projectile*> projectiles;
 	list<ProjectileEnemigo*> projectilesEnemigos;

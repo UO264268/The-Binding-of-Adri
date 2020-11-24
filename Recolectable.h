@@ -7,7 +7,8 @@ class Recolectable : public Actor
 public:
 	Recolectable(float x, float y, Game* game);
 	void update();
-	Animation* animation;
 	void draw(float scrollX, float scrollY) override;
+	Animation* animation;
+	virtual int recoger();
 };
 

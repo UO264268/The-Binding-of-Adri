@@ -26,18 +26,16 @@ void GameLayer::init() {
 	audioBackground = new Audio("res/musica_ambiente.mp3", true);
 	audioBackground->play();
 
-	points = 0;
-	textPoints = new Text("hola", WIDTH * 0.92, HEIGHT * 0.04, game);
-	textPoints->content = to_string(points);
+	textVidas = new Text("hola", WIDTH * 0.92, HEIGHT * 0.04, game);
+	textVidas->content = to_string(0);
 
-	recolectable = 0;
-	textRecolectable = new Text("hola", WIDTH * 0.8, HEIGHT * 0.04, game);
-	textRecolectable->content = to_string(recolectable);
-
+	textBombas = new Text("hola", WIDTH * 0.8, HEIGHT * 0.04, game);
+	textBombas->content = to_string(0);
+	
 	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, 0, game);
-	backgroundPoints = new Actor("res/icono_puntos.png",
+	backgroundVidas = new Actor("res/icono_puntos.png",
 		WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
-	backgroundRecolectable = new Actor("res/icono_recolectable.png",
+	backgroundBombas = new Actor("res/icono_recolectable.png",
 		WIDTH * 0.72, HEIGHT * 0.08, 40, 40, game);
 
 	enemies.clear(); // Vaciar por si reiniciamos el juego
@@ -128,8 +126,8 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
-	case 'r': {
-		Recolectable* recolectable = new Recolectable(x, y, game);
+	case 'B': {
+		Recolectable* recolectable = new BombaRecolectable(x, y, game);
 		recolectable->y = recolectable->y - recolectable->height / 2;
 		recolectables.push_back(recolectable);
 		space->addDynamicActor(recolectable);
@@ -366,8 +364,12 @@ void GameLayer::update() {
 	// Colisiones
 	for (auto const& r : recolectables) {
 		if (player->isOverlap(r)) {
-			recolectable++;
-			textRecolectable->content = to_string(recolectable);
+
+			if (r->recoger() == game->bomba) {
+				player->bombas++;
+			}if (r->recoger() == game->corazon) {
+				player->lifes++;
+			}
 
 			bool pInList = std::find(deleteRecolectables.begin(),
 				deleteRecolectables.end(),
@@ -447,9 +449,6 @@ void GameLayer::update() {
 				if (newEnemy != NULL) {
 					newEnemies.push_back(newEnemy);
 				}
-
-				points++;
-				textPoints->content = to_string(points);
 			}
 		}
 
@@ -596,6 +595,8 @@ void GameLayer::update() {
 	}
 	deleteBombas.clear();
 
+	textBombas->content = to_string(player->bombas);
+	textVidas->content = to_string(player->lifes);
 }
 
 void GameLayer::calculateScroll() {
@@ -638,11 +639,11 @@ void GameLayer::draw() {
 		bomba->draw(scrollX, scrollY);
 	}
 
-	backgroundPoints->draw();
-	textPoints->draw();
+	backgroundVidas->draw();
+	textVidas->draw();
 
-	backgroundRecolectable->draw();
-	textRecolectable->draw();
+	backgroundBombas->draw();
+	textBombas->draw();
 
 	// HUD
 	if (game->input == game->inputMouse) {
