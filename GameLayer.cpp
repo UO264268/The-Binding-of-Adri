@@ -579,21 +579,21 @@ void GameLayer::calculateScroll() {
 	//}
 
 	//// limite arriba
-	//if (player->y > HEIGHT * 0.15) {
-	//	if (player->y - scrollY < HEIGHT * 0.15) {
-	//		scrollY = player->y - HEIGHT * 0.15;
-	//	}
-	//}
+	if (player->y > HEIGHT * 0.15) {
+		if (player->y - scrollY < HEIGHT * 0.15) {
+			scrollY = player->y - HEIGHT * 0.15;
+		}
+	}
 
-	//// limite abajo
-	//if (player->y < mapHeight - HEIGHT * 0.15) {
-	//	if (player->y - scrollY > HEIGHT * 0.85) {
-	//		scrollY = player->y - HEIGHT * 0.85;
-	//	}
-	//}
+	// limite abajo
+	if (player->y < mapHeight - HEIGHT * 0.15) {
+		if (player->y - scrollY > HEIGHT * 0.85) {
+			scrollY = player->y - HEIGHT * 0.85;
+		}
+	}
 
 	scrollX = 0;
-	scrollY = 0;
+	//scrollY = 0;
 }
 
 
