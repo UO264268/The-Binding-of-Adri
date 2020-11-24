@@ -14,4 +14,6 @@ public:
 	Animation* animation;
 
 	int state;
+
+	bool hitted = false;
 };

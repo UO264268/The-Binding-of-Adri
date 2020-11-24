@@ -16,4 +16,5 @@ public:
 	Animation* aExploding;
 
 	int state;
+	int a;
 };

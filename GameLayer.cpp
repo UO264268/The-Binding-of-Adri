@@ -26,17 +26,17 @@ void GameLayer::init() {
 	audioBackground = new Audio("res/musica_ambiente.mp3", true);
 	audioBackground->play();
 
-	textVidas = new Text("hola", WIDTH * 0.92, HEIGHT * 0.04, game);
+	textVidas = new Text("hola", WIDTH * 0.92, HEIGHT * 0.05, game);
 	textVidas->content = to_string(0);
 
-	textBombas = new Text("hola", WIDTH * 0.8, HEIGHT * 0.04, game);
+	textBombas = new Text("hola", WIDTH * 0.8, HEIGHT * 0.05, game);
 	textBombas->content = to_string(0);
 	
 	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, 0, game);
-	backgroundVidas = new Actor("res/icono_puntos.png",
-		WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
-	backgroundBombas = new Actor("res/icono_recolectable.png",
-		WIDTH * 0.72, HEIGHT * 0.08, 40, 40, game);
+	backgroundVidas = new Actor("res/icono_vida.png",
+		WIDTH * 0.85, HEIGHT * 0.05, 39, 42, game);
+	backgroundBombas = new Actor("res/icono_bomba.png",
+		WIDTH * 0.76, HEIGHT * 0.05, 39, 39, game);
 
 	enemies.clear(); // Vaciar por si reiniciamos el juego
 	projectiles.clear(); // Vaciar por si reiniciamos el juego
@@ -111,15 +111,15 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addDynamicActor(enemy);
 		break;
 	}
-	case '1': {
+	case 'J': {
 		player = new Player(x, y, game);
 		// modificación para empezar a contar desde el suelo.
 		player->y = player->y - player->height / 2;
 		space->addDynamicActor(player);
 		break;
 	}
-	case '#': {
-		Tile* tile = new Tile("res/bloque_tierra.png", x, y, false, game);
+	case 'T': {
+		Tile* tile = new Tile("res/pared_arriba.png", x, y, false, game);
 		// modificación para empezar a contar desde el suelo.
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
@@ -127,6 +127,62 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		break;
 	}
 	case 'B': {
+		Tile* tile = new Tile("res/pared_abajo.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case 'D': {
+		Tile* tile = new Tile("res/pared_derecha.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case 'I': {
+		Tile* tile = new Tile("res/pared_izquierda.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '1': {
+		Tile* tile = new Tile("res/pared_esquina_arriba_izquierda.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '2': {
+		Tile* tile = new Tile("res/pared_esquina_arriba_derecha.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '3': {
+		Tile* tile = new Tile("res/pared_esquina_abajo_derecha.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '4': {
+		Tile* tile = new Tile("res/pared_esquina_abajo_izquierda.png", x, y, false, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case 'b': {
 		Recolectable* recolectable = new BombaRecolectable(x, y, game);
 		recolectable->y = recolectable->y - recolectable->height / 2;
 		recolectables.push_back(recolectable);
@@ -344,7 +400,7 @@ void GameLayer::update() {
 	list<Explosion*> deleteExplosiones;
 
 	for (auto const& explosion : explosiones) {
-		if (explosion->state == game->stateExploited) {
+		if (!explosion->hitted) {
 			if (player->isOverlap(explosion)) {
 				player->loseLife(1);
 				if (player->lifes <= 0) {
@@ -460,7 +516,7 @@ void GameLayer::update() {
 		}
 
 		for (auto const& explosion : explosiones) {
-			if (explosion->state == game->stateExploited) {
+			if (!explosion->hitted) {
 				if (enemy->isOverlap(explosion)) {
 					Enemy* newEnemy = enemy->impacted();
 
@@ -504,7 +560,7 @@ void GameLayer::update() {
 		}
 
 		for (auto const& explosion : explosiones) {
-			if (explosion->state == game->stateExploited && tile->isOverlap(explosion)) {
+			if (!explosion->hitted && tile->isOverlap(explosion)) {
 				if (tile->desctructibleByBomb) {
 					bool pInList = std::find(deleteTiles.begin(),
 						deleteTiles.end(),
@@ -540,6 +596,10 @@ void GameLayer::update() {
 				deleteEnemies.push_back(enemy);
 			}
 		}
+	}
+
+	for (auto const& explosion : explosiones) {
+		explosion->hitted = true;
 	}
 
 	for (auto const& explosion : explosiones) {

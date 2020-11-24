@@ -3,10 +3,10 @@
 Bomba::Bomba(float x, float y, Game* game)
 	: Actor("res/moneda.png", x, y, 40, 40, game) {
 
-	aExploding = new Animation("res/recolectable.png", width, height, 256, 32, 6, 8, false, game);
+	aExploding = new Animation("res/bomba.png", width, height, 88, 21, 4, 4, false, game);
 	animation = aExploding;
 
-	vx = 0;
+	a = 1;
 
 	state = game->stateExploding;
 }
@@ -17,8 +17,12 @@ void Bomba::update() {
 
 	// Acabo la animación, no sabemos cual
 	if (endAnimation) {
-		if (state == game->stateExploding) {
+		if (state == game->stateExploding && a == 0) {
 			state = game->stateExploited;
+		}
+		else if (state == game->stateExploding && a > 0) {
+			a--;
+			animation->currentFrame = 0;
 		}
 	}
 }

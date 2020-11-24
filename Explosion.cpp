@@ -1,12 +1,12 @@
 #include "Explosion.h"
 
 Explosion::Explosion(float x, float y, Game* game)
-	: Actor("res/moneda.png", x, y, 250, 250, game) {
+	: Actor("res/moneda.png", x, y, 125, 125, game) {
 	
 	state = game->stateExploding;
 
-	aExploding = new Animation("res/enemy2_muerte.png", width, height,
-		1152, 204, 2, 6, false, game);
+	aExploding = new Animation("res/explosion.png", width, height,
+		1152, 96, 2, 12, false, game);
 
 	animation = aExploding;
 
