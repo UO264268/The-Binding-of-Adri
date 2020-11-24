@@ -11,6 +11,7 @@
 #include "Pad.h"
 #include "Recolectable.h";
 #include "BombaRecolectable.h"
+#include "VidasRecolectable.h"
 
 #include "EnemigoBasico.h"
 #include "EnemigoSinCabeza.h"

@@ -126,6 +126,9 @@
     <ClInclude Include="BombaRecolectable.h">
       <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
     </ClInclude>
+    <ClInclude Include="VidasRecolectable.h">
+      <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -201,6 +204,9 @@
       <Filter>Archivos de origen\Actores\Recolectables</Filter>
     </ClCompile>
     <ClCompile Include="BombaRecolectable.cpp">
+      <Filter>Archivos de origen\Actores\Recolectables</Filter>
+    </ClCompile>
+    <ClCompile Include="VidasRecolectable.cpp">
       <Filter>Archivos de origen\Actores\Recolectables</Filter>
     </ClCompile>
   </ItemGroup>

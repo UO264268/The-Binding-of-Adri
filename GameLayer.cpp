@@ -133,6 +133,13 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addDynamicActor(recolectable);
 		break;
 	}
+	case 'V': {
+		Recolectable* recolectable = new VidasRecolectable(x, y, game);
+		recolectable->y = recolectable->y - recolectable->height / 2;
+		recolectables.push_back(recolectable);
+		space->addDynamicActor(recolectable);
+		break;
+	}
 	case 'R': {
 		Tile* tile = new Tile("res/wooden_box.png", x, y, true, game);
 		// modificación para empezar a contar desde el suelo.

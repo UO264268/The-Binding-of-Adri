@@ -176,6 +176,7 @@
     <ClInclude Include="Space.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="VidasRecolectable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="VidasRecolectable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="The binding of Adri.rc" />
