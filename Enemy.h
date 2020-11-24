@@ -2,7 +2,8 @@
 
 #include "Actor.h"
 #include "Animation.h" 
-#include "projectileEnemigo.h"
+#include "ProjectileEnemigo.h"
+#include "Explosion.h"
 
 class Enemy : public Actor
 {
@@ -12,6 +13,7 @@ public:
 	virtual void update(float x = 0, float y = 0);
 	virtual Enemy* impacted(int damage = 1); // Recibe impacto y pone animación de morir
 	virtual ProjectileEnemigo* shoot();
+	virtual Explosion* explode();
 	float vxIntelligence;
 	float vyIntelligence;
 	int state;

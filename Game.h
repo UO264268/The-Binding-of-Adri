@@ -10,8 +10,8 @@ using namespace std;
 #include <map> 
 
 // Valores generales
-#define WIDTH 480
-#define HEIGHT 320
+#define WIDTH 1920
+#define HEIGHT 1080
 
 #include "Layer.h"
 class Layer;
@@ -48,8 +48,12 @@ public:
 	int const stateDead = 4;
 	int const stateShooting = 5;
 	int const stateHitted = 6;
+	int const stateExploding = 7;
+	int const stateExploited = 8;
 
 	int const orientationRight = 1;
 	int const orientationLeft = 2;
+
+
 
 };

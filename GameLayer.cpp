@@ -34,7 +34,7 @@ void GameLayer::init() {
 	textRecolectable = new Text("hola", WIDTH * 0.8, HEIGHT * 0.04, game);
 	textRecolectable->content = to_string(recolectable);
 
-	background = new Background("res/fondo_2.png", WIDTH * 0.5, HEIGHT * 0.5, -1, game);
+	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, 0, game);
 	backgroundPoints = new Actor("res/icono_puntos.png",
 		WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
 	backgroundRecolectable = new Actor("res/icono_recolectable.png",
@@ -43,6 +43,7 @@ void GameLayer::init() {
 	enemies.clear(); // Vaciar por si reiniciamos el juego
 	projectiles.clear(); // Vaciar por si reiniciamos el juego
 	projectilesEnemigos.clear();
+	explosiones.clear();
 
 	loadMap("res/" + to_string(game->currentLevel) + ".txt");
 }
@@ -89,9 +90,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case 'E': {
 		Enemy* enemy = NULL;
 
-		int num = rand() % 3;
-
-		//int num = 2;
+		int num = rand() % 4;
 
 		if (num == 0) {
 			enemy = new EnemigoBasico(x, y, game);
@@ -101,6 +100,9 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		}
 		else if (num == 2) {
 			enemy = new EnemigoDispara(x, y, game);
+		}
+		else if (num == 3) {
+			enemy = new MoscaBomba(x, y, game);
 		}
 
 		// modificación para empezar a contar desde el suelo.
@@ -276,14 +278,36 @@ void GameLayer::update() {
 	space->update();
 	background->update();
 	player->update();
+
+	list<Enemy*> deleteEnemies;
+
 	for (auto const& enemy : enemies) {
 		enemy->update(player->x, player->y);
+		
 		ProjectileEnemigo* newProjectile = enemy->shoot();
+		
 		if (newProjectile != NULL) {
 			space->addDynamicActor(newProjectile);
 			projectilesEnemigos.push_back(newProjectile);
 		}
+
+		
+		Explosion* newExplosion = enemy->explode();
+
+		if (newExplosion != NULL) {
+			deleteEnemies.push_back(enemy);
+			
+			space->addDynamicActor(newExplosion);
+			explosiones.push_back(newExplosion);
+		}	
 	}
+
+	for (auto const& delEnemy : deleteEnemies) {
+		enemies.remove(delEnemy);
+		space->removeDynamicActor(delEnemy);
+	}
+	deleteEnemies.clear();
+
 	for (auto const& projectile : projectiles) {
 		projectile->update();
 	}
@@ -294,16 +318,35 @@ void GameLayer::update() {
 		recolectable->update();
 	}
 
+	list<Explosion*> deleteExplosiones;
+
+	for (auto const& explosion : explosiones) {
+		explosion->update();
+	}
+
+	for (auto const& explosion : explosiones) {
+		if (explosion->state == game->stateExploited) {
+			if (player->isOverlap(explosion)) {
+				player->loseLife(1);
+				if (player->lifes <= 0) {
+					init();
+					return;
+				}
+			}
+		}
+	}
+
 	// Colisiones
 	for (auto const& enemy : enemies) {
 		if (player->isOverlap(enemy)) {
-			player->loseLife(1);
+			player->loseLife(enemy->daño);
 			if (player->lifes <= 0) {
 				init();
 				return;
 			}
 		}
 	}
+
 
 	list<Recolectable*> deleteRecolectables;
 
@@ -345,7 +388,6 @@ void GameLayer::update() {
 
 	// Colisiones , Enemy - Projectile
 
-	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
 	list<Tile*> deleteTiles;
 
@@ -363,7 +405,7 @@ void GameLayer::update() {
 	}
 
 	list<Enemy*> newEnemies;
-
+	
 	for (auto const& enemy : enemies) {
 		for (auto const& projectile : projectiles) {
 			if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
@@ -396,26 +438,47 @@ void GameLayer::update() {
 				textPoints->content = to_string(points);
 			}
 		}
+
+		for (auto const& explosion : explosiones) {
+			cout << "Linea 448: " << explosion->state << endl;
+			if (explosion->state == game->stateExploited) {
+				if (enemy->isOverlap(explosion)) {
+					Enemy* newEnemy = enemy->impacted();
+
+					if (newEnemy != NULL) {
+						newEnemies.push_back(newEnemy);
+					}
+				}
+			}
+		}
 	}
 
 	for (auto const& enemy : newEnemies) {
 		space->addDynamicActor(enemy);
 		enemies.push_back(enemy);
-
 	}
 	newEnemies.clear();
 
 	for (auto const& tile : tiles) {
 		for (auto const& projectile : projectiles) {
-			if (tile->isOverlap(projectile) && tile->desctructibleByShoot) {
-				bool pInList = std::find(deleteTiles.begin(),
-					deleteTiles.end(),
-					tile) != deleteTiles.end();
+			if (tile->isOverlap(projectile)){
+				if (tile->desctructibleByShoot) {
+					bool pInList = std::find(deleteTiles.begin(),
+						deleteTiles.end(),
+						tile) != deleteTiles.end();
 
-				if (!pInList) {
-					deleteTiles.push_back(tile);
+						if (!pInList) {
+							deleteTiles.push_back(tile);
+						}
 				}
 
+				bool pInList = std::find(deleteProjectiles.begin(),
+					deleteProjectiles.end(),
+					projectile) != deleteProjectiles.end();
+
+				if (!pInList) {
+					deleteProjectiles.push_back(projectile);
+				}
 			}
 		}
 
@@ -441,6 +504,18 @@ void GameLayer::update() {
 
 			if (!eInList) {
 				deleteEnemies.push_back(enemy);
+			}
+		}
+	}
+
+	for (auto const& explosion : explosiones) {
+		if (explosion->state == game->stateExploited) {
+			bool eInList = std::find(deleteExplosiones.begin(),
+				deleteExplosiones.end(),
+				explosion) != deleteExplosiones.end();
+
+			if (!eInList) {
+				deleteExplosiones.push_back(explosion);
 			}
 		}
 	}
@@ -479,36 +554,46 @@ void GameLayer::update() {
 	}
 	deleteTiles.clear();
 
+	for (auto const& delExplosion : deleteExplosiones) {
+		explosiones.remove(delExplosion);
+		space->removeDynamicActor(delExplosion);
+		delete delExplosion;
+	}
+	deleteExplosiones.clear();
+
 }
 
 void GameLayer::calculateScroll() {
-	// limite izquierda
-	if (player->x > WIDTH * 0.3) {
-		if (player->x - scrollX < WIDTH * 0.3) {
-			scrollX = player->x - WIDTH * 0.3;
-		}
-	}
+	//// limite izquierda
+	//if (player->x > WIDTH * 0.3) {
+	//	if (player->x - scrollX < WIDTH * 0.3) {
+	//		scrollX = player->x - WIDTH * 0.3;
+	//	}
+	//}
 
-	// limite derecha
-	if (player->x < mapWidth - WIDTH * 0.3) {
-		if (player->x - scrollX > WIDTH * 0.7) {
-			scrollX = player->x - WIDTH * 0.7;
-		}
-	}
+	//// limite derecha
+	//if (player->x < mapWidth - WIDTH * 0.3) {
+	//	if (player->x - scrollX > WIDTH * 0.7) {
+	//		scrollX = player->x - WIDTH * 0.7;
+	//	}
+	//}
 
-	// limite arriba
-	if (player->y > HEIGHT * 0.15) {
-		if (player->y - scrollY < HEIGHT * 0.15) {
-			scrollY = player->y - HEIGHT * 0.15;
-		}
-	}
+	//// limite arriba
+	//if (player->y > HEIGHT * 0.15) {
+	//	if (player->y - scrollY < HEIGHT * 0.15) {
+	//		scrollY = player->y - HEIGHT * 0.15;
+	//	}
+	//}
 
-	// limite abajo
-	if (player->y < mapHeight - HEIGHT * 0.15) {
-		if (player->y - scrollY > HEIGHT * 0.85) {
-			scrollY = player->y - HEIGHT * 0.85;
-		}
-	}
+	//// limite abajo
+	//if (player->y < mapHeight - HEIGHT * 0.15) {
+	//	if (player->y - scrollY > HEIGHT * 0.85) {
+	//		scrollY = player->y - HEIGHT * 0.85;
+	//	}
+	//}
+
+	scrollX = 0;
+	scrollY = 0;
 }
 
 
@@ -533,6 +618,10 @@ void GameLayer::draw() {
 
 	for (auto const& recolectable : recolectables) {
 		recolectable->draw(scrollX, scrollY);
+	}
+
+	for (auto const& explosion : explosiones) {
+		explosion->draw(scrollX, scrollY);
 	}
 
 	backgroundPoints->draw();

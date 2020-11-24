@@ -2,13 +2,15 @@
 
 #include "Animation.h" 
 #include "Enemy.h"
-#include "EnemigoSinCabeza.h"
+#include "Explosion.h"
 
-class EnemigoBasico : public Enemy
+class MoscaBomba : public Enemy
 {
 public:
-	EnemigoBasico(float x, float y, Game* game);
+	MoscaBomba(float x, float y, Game* game);
 	void update(float x = 0, float y = 0) override;
 	Enemy* impacted(int damage = 1) override;
 	void draw(float scrollX, float scrollY) override;
+	Explosion* explode();
 };
+

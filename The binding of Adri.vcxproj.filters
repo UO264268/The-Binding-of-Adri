@@ -108,6 +108,15 @@
     <ClInclude Include="EnemigoDispara.h">
       <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
     </ClInclude>
+    <ClInclude Include="MoscaBomba.h">
+      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.h">
+      <Filter>Archivos de encabezado\Actores</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -176,5 +185,16 @@
     <ClCompile Include="EnemigoDispara.cpp">
       <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
+    <ClCompile Include="MoscaBomba.cpp">
+      <Filter>Archivos de origen\Actores\Enemigos</Filter>
+    </ClCompile>
+    <ClCompile Include="Explosion.cpp">
+      <Filter>Archivos de origen\Actores</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="The binding of Adri.rc">
+      <Filter>Archivos de recursos</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

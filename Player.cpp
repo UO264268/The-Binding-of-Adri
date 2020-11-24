@@ -90,7 +90,6 @@ void Player::moveY(float axis) {
 }
 
 Projectile* Player::shoot() {
-
 	if (shootTime == 0) {
 		audioShoot->play();
 		shootTime = shootCadence;

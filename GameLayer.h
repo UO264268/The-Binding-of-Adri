@@ -14,6 +14,8 @@
 #include "EnemigoBasico.h"
 #include "EnemigoSinCabeza.h"
 #include "EnemigoDispara.h"
+#include "MoscaBomba.h"
+#include "Explosion.h"
 
 #include "Audio.h"
 #include "Space.h" // importar
@@ -66,6 +68,7 @@ public:
 	list<Projectile*> projectiles;
 	list<ProjectileEnemigo*> projectilesEnemigos;
 	list<Recolectable*> recolectables;
+	list<Explosion*> explosiones;
 
 	bool controlContinue = false;
 	bool controlShootUp = false;

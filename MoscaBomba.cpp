@@ -1,6 +1,6 @@
-#include "EnemigoBasico.h"
+#include "MoscaBomba.h"
 
-EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
+MoscaBomba::MoscaBomba(float x, float y, Game* game)
 	: Enemy("res/enemigo.png", x, y, 36, 40, game) {
 
 	state = game->stateMoving;
@@ -15,30 +15,25 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 		108, 40, 6, 3, true, game);
 	animation = aMoving;
 
-	vx = 1;
+	vx = 0;
 	vy = 0;
-	
-	vxIntelligence = -1;
-	vyIntelligence = 0;
+
+	vxIntelligence = 2;
+	vyIntelligence = 2;
 
 	vx = vxIntelligence;
 	vy = vyIntelligence;
 
-	vidas = 4;
-	daño = 1;
+	vidas = 3;
+
 }
 
-void EnemigoBasico::update(float xPlayer, float yPlayer) {
+void MoscaBomba::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();
 
 	// Acabo la animación, no sabemos cual
 	if (endAnimation) {
-		// Estaba muriendo
-		if (state == game->stateDying) {
-			state = game->stateDead;
-		}
-
 		if (state == game->stateHitted) {
 			state = game->stateMoving;
 		}
@@ -47,33 +42,16 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	if (state == game->stateMoving) {
 		animation = aMoving;
 	}
-	if (state == game->stateDying) {
-		animation = aDying;
-	}
 	if (state == game->stateHitted) {
 		animation = aHitted;
 	}
 
-	// Establecer velocidad
 	if (state != game->stateDying) {
-		if (x > xPlayer) { //Player a la derecha del enemigo
-			vxIntelligence = -1;
+		if (vx == 0) {
+			vxIntelligence = vxIntelligence * -1;
 		}
-		else if (x < xPlayer) { //Player a la izquierda del enemigo
-			vxIntelligence = 1;
-		}
-		else { //Player con la misma x del enemigo
-			vxIntelligence = 0;
-		}
-
-		if (y > yPlayer) { //Player debajo del enemigo
-			vyIntelligence = -1;
-		}
-		else if (y < yPlayer) { //Player arriba del enemigo
-			vyIntelligence = 1;
-		}
-		else { //Player a la misma altura del enemigo
-			vyIntelligence = 0;
+		if (vy == 0) {
+			vyIntelligence = vyIntelligence * -1;
 		}
 
 		vx = vxIntelligence;
@@ -81,11 +59,16 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	}
 	else {
 		vx = 0;
+		vy = 0;
+	}
+
+	if (shootTime > 0) {
+		shootTime--;
 	}
 
 }
 
-Enemy* EnemigoBasico::impacted(int damage) {
+Enemy* MoscaBomba::impacted(int damage) {
 	if (state != game->stateDying) {
 		if ((vidas - damage) > 0) {
 			state = game->stateHitted;
@@ -96,22 +79,21 @@ Enemy* EnemigoBasico::impacted(int damage) {
 		else {
 			vidas = 0;
 			state = game->stateDying;
-
-			int a = rand() % 3;
-
-			if (a == 0) {
-				Enemy* enemy = new EnemigoSinCabeza(x, y, game);
-				enemy->y = enemy->y - enemy->height / 2;
-				enemy->state = game->stateMoving;
-				return enemy;
-			}			
 		}
 
 		return NULL;
 	}
 }
 
-void EnemigoBasico::draw(float scrollX, float scrollY) {
+void MoscaBomba::draw(float scrollX, float scrollY) {
 	animation->draw(x - scrollX, y - scrollY);
 }
 
+Explosion* MoscaBomba::explode() {
+	if (state == game->stateDying) {
+		state = game->stateDead;
+		Explosion* explosion = new Explosion(x, y, game);
+		return explosion;
+	}
+	return NULL;
+}

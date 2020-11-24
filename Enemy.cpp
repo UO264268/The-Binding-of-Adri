@@ -105,3 +105,7 @@ void Enemy::draw(float scrollX, float scrollY) {
 ProjectileEnemigo* Enemy::shoot() {
 	return NULL;
 }
+
+Explosion* Enemy::explode() {
+	return NULL;
+}
