@@ -1,7 +1,7 @@
 #include "CabezaJugador.h"
 
 CabezaJugador::CabezaJugador(float x, float y, Game* game)
-	: Actor("res/player/cabeza.png", x, y, 48, 30, game) {
+	: Actor("res/player/cabeza.png", x, y, 43, 27, game) {
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
 
 	dispararDerecha = new Animation("res/player/isaac_cabeza_disparando_derecha.png", width, height,

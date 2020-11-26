@@ -76,7 +76,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 {
 	switch (character) {
 	case 'C': {
-		cup = new Tile("res/recolectables/copa.png", x, y, false, game);
+		cup = new Tile("res/recolectables/copa.png", x, y, 32, 40, false, game);
 		// modificación para empezar a contar desde el suelo.
 		cup->y = cup->y - cup->height / 2;
 		space->addDynamicActor(cup); // Realmente no hace falta

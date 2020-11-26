@@ -5,3 +5,8 @@ Tile::Tile(string filename, float x, float y, bool desctructibleByBomb, Game* ga
 	this->desctructibleByBomb = desctructibleByBomb;
 }
 
+Tile::Tile(string filename, float x, float y, float width, float height, bool desctructibleByBomb, Game* game)
+	: Actor(filename, x, y, width, height, game) {
+	this->desctructibleByBomb = desctructibleByBomb;
+}
+
