@@ -1,12 +1,12 @@
 #include "MoscaBomba.h"
 
 MoscaBomba::MoscaBomba(float x, float y, Game* game)
-	: Enemy("res/enemigo.png", x, y, 36, 40, game) {
+	: Enemy("res/enemigo.png", x, y, 48, 48, game) {
 
 	state = game->stateMoving;
 
 	aHitted = new Animation("res/enemigos/mosca_bomba_hitted.png", width, height,
-		36, 40, 6, 1, false, game);
+		32, 32, 6, 1, false, game);
 
 	aMoving = new Animation("res/enemigos/mosca_bomba.png", width, height,
 		64, 32, 6, 2, true, game);

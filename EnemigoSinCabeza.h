@@ -12,6 +12,11 @@ public:
 	void draw(float scrollX, float scrollY) override;
 	ProjectileEnemigo* shoot() override;
 	int cdCambioDireccion = 0;
+
+	Animation* movimientoY;
+	Animation* movimientoX;
+	Animation* parado;
+	Animation* sangre;
 };
 
 

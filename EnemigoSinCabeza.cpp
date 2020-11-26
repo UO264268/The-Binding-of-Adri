@@ -1,22 +1,29 @@
 #include "EnemigoSinCabeza.h"
 
 EnemigoSinCabeza::EnemigoSinCabeza(float x, float y, Game* game)
-	: Enemy("res/enemy2.png", x, y, 49, 44, game) {
+	: Enemy("res/enemy2.png", x, y, 48, 48, game) {
 
 	state = game->stateMoving;
 
-	aShooting = new Animation("res/enemy2_animacion_disparo.png", width, height,
-		2560, 128, 2, 20, false, game);
+	aHitted = new Animation("res/enemigos/cuerpo_enemigo_hitted.png", width, height,
+		32, 32, 6, 1, false, game);
 
-	aHitted = new Animation("res/enemigo_hitted.png", width, height,
-		108, 40, 6, 1, false, game);
+	aDying = new Animation("res/enemigos/cuerpo_enemigo_hitted.png", width, height,
+		32, 32, 6, 1, false, game);
 
-	aDying = new Animation("res/enemy2_muerte.png", width, height,
-		1152, 204, 2, 6, false, game);
+	movimientoX = new Animation("res/enemigos/enemigo_caminar_lado.png", width, height,
+		256, 32, 2, 8, true, game);
 
-	aMoving = new Animation("res/enemy2_animacion.png", width, height,
-		2184, 92, 2, 24, true, game);
-	animation = aMoving;
+	movimientoY = new Animation("res/enemigos/enemigo_caminar_defrente.png", width, height,
+		320, 32, 2, 10, true, game);
+	
+	parado = new Animation("res/enemigos/cuerpo_enemigo_parado.png", width, height,
+		32, 32, 1, 1, true, game);
+
+	sangre = new Animation("res/enemigos/enemigo_sinCabeza_cabeza.png", width, height,
+		192, 32, 5, 4, true, game);
+
+	animation = movimientoX;
 
 	vx = 1;
 	vy = 1;
@@ -33,6 +40,7 @@ EnemigoSinCabeza::EnemigoSinCabeza(float x, float y, Game* game)
 void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();
+	sangre->update();
 
 	// Acabo la animación, no sabemos cual
 	if (endAnimation) {
@@ -41,18 +49,25 @@ void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 			state = game->stateDead;
 		}
 
-		if (state == game->stateShooting) {
-			state = game->stateMoving;
-		}
-
 		if (state == game->stateHitted) {
 			state = game->stateMoving;
 		}
 	}
 
 	if (state == game->stateMoving) {
-		animation = aMoving;
+		if (vx != 0) {
+			animation = movimientoX;
+		}
+
+		if (vy != 0) {
+			animation = movimientoY;
+		}
+
+		if (vy == 0 && vx == 0) {
+			animation = parado;
+		}
 	}
+
 	if (state == game->stateDying) {
 		animation = aDying;
 	}
@@ -87,8 +102,6 @@ void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 
 ProjectileEnemigo* EnemigoSinCabeza::shoot() {
 	if (shootTime == 0 && state != game->stateDying && state != game->stateDead) {
-		state = game->stateShooting;
-		aShooting->currentFrame = 0;
 		shootTime = shootCadence;
 
 		int vx = 0;
@@ -126,4 +139,5 @@ Enemy* EnemigoSinCabeza::impacted(int damage) {
 
 void EnemigoSinCabeza::draw(float scrollX, float scrollY){
 	animation->draw(x - scrollX, y - scrollY);
+	sangre->draw(x - scrollX, y - scrollY - 10);
 }

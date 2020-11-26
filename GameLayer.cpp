@@ -87,7 +87,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 
 		//int num = rand() % 4;
 
-		int num = 3;
+		int num = 1;
 
 		if (num == 0) {
 			enemy = new EnemigoBasico(x, y, game);
