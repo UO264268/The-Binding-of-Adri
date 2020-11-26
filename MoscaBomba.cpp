@@ -5,14 +5,11 @@ MoscaBomba::MoscaBomba(float x, float y, Game* game)
 
 	state = game->stateMoving;
 
-	aDying = new Animation("res/enemigo_morir.png", width, height,
-		280, 40, 1, 8, false, game);
-
-	aHitted = new Animation("res/enemigo_hitted.png", width, height,
+	aHitted = new Animation("res/enemigos/mosca_bomba_hitted.png", width, height,
 		36, 40, 6, 1, false, game);
 
-	aMoving = new Animation("res/enemigo_movimiento.png", width, height,
-		108, 40, 6, 3, true, game);
+	aMoving = new Animation("res/enemigos/mosca_bomba.png", width, height,
+		64, 32, 6, 2, true, game);
 	animation = aMoving;
 
 	vx = 0;

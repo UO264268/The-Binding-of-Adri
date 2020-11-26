@@ -90,9 +90,6 @@
     <ClInclude Include="Audio.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="MenuLayer.h">
-      <Filter>Archivos de encabezado\Actores</Filter>
-    </ClInclude>
     <ClInclude Include="Pad.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
@@ -128,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="VidasRecolectable.h">
       <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuLayer.h">
+      <Filter>Archivos de encabezado\Layers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,9 +170,6 @@
     <ClCompile Include="Audio.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="MenuLayer.cpp">
-      <Filter>Archivos de origen\Actores</Filter>
-    </ClCompile>
     <ClCompile Include="Pad.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
@@ -208,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="VidasRecolectable.cpp">
       <Filter>Archivos de origen\Actores\Recolectables</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuLayer.cpp">
+      <Filter>Archivos de origen\Layers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

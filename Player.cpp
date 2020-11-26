@@ -1,32 +1,37 @@
 #include "Player.h"
 
 Player::Player(float x, float y, Game* game)
-	: Actor("res/jugador.png", x, y, 35, 35, game) {
+	: Actor("res/jugador.png", x, y, 32, 20, game) {
 
-	orientation = game->orientationRight;
+	
+	orientacionCaminar = game->orientationBottom;
+	orientacionDisparos = game->orientationBottom;
 	state = game->stateMoving;
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
-	aShootingRight = new Animation("res/jugador_disparando_derecha.png",
-		width, height, 160, 40, 6, 4, false, game);
-	aShootingLeft = new Animation("res/jugador_disparando_izquierda.png",
-		width, height, 160, 40, 6, 4, false, game);
 
-	aJumpingRight = new Animation("res/jugador_saltando_derecha.png",
-		width, height, 160, 40, 6, 4, true, game);
-	aJumpingLeft = new Animation("res/jugador_saltando_izquierda.png",
-		width, height, 160, 40, 6, 4, true, game);
-	aIdleRight = new Animation("res/jugador_idle_derecha.png", width, height,
-		320, 40, 6, 8, true, game);
-	aIdleLeft = new Animation("res/jugador_idle_izquierda.png", width, height,
-		320, 40, 6, 8, true, game);
-	aRunningRight = new Animation("res/jugador_corriendo_derecha.png", width, height,
-		320, 40, 6, 8, true, game);
-	aRunningLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
-		320, 40, 6, 8, true, game);
-	aRunningLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
-		320, 40, 6, 8, true, game);
+	caminarDerecha = new Animation("res/player/isaac_cuerpo_derecha.png", width, height,
+		320, 14, 2, 10, true, game);
+	caminarIzquierda = new Animation("res/player/isaac_cuerpo_izquierda.png", width, height,
+		320, 14, 2, 10, true, game);
+	caminarAbajo = new Animation("res/player/isaac_cuerpo_defrente.png", width, height,
+		320, 15, 2, 10, true, game);
+	caminarArriba = new Animation("res/player/isaac_cuerpo_defrente.png", width, height,
+		320, 15, 2, 10, true, game);
 
-	animation = aIdleRight;
+	dispararDerecha = new Animation("res/player/isaac_cabeza_disparando_derecha.png", width, height,
+		58, 25, 10, 2, true, game);
+	dispararIzquierda = new Animation("res/player/isaac_cabeza_disparando_izquierda.png", width, height,
+		58, 25, 10, 2, true, game);
+	dispararAbajo = new Animation("res/player/isaac_cabeza_disparando_abajo.png", width, height,
+		58, 25, 10, 2, true, game);
+	dispararArriba = new Animation("res/player/isaac_cabeza_disparando_arriba.png", width, height,
+		58, 25, 10, 2, true, game);
+
+	cuerpoParado = new Animation("res/player/isaac_cuerpo_parado.png", width, height,
+		32, 13, 1, 1, true, game);
+
+	animacionCabeza = dispararAbajo;
+	animacionCuerpo = cuerpoParado;
 
 }
 
@@ -36,44 +41,69 @@ void Player::update() {
 		invulnerableTime--;
 	}
 
-	bool endAnimation = animation->update();
+	bool endAnimationCabeza = animacionCabeza->update();
+	bool endAnimationCuerpo = animacionCuerpo->update();
 
 	// Establecer orientación
 	if (vx > 0) {
-		orientation = game->orientationRight;
+		orientacionCaminar = game->orientationRight;
 	}
 	if (vx < 0) {
-		orientation = game->orientationLeft;
+		orientacionCaminar = game->orientationLeft;
+	}
+	if (vy > 0) {
+		orientacionCaminar = game->orientationUp;
+	}
+	if (vy < 0) {
+		orientacionCaminar = game->orientationBottom;
 	}
 
-	// Selección de animación basada en estados
-	if (state == game->stateJumping) {
-		if (orientation == game->orientationRight) {
-			animation = aJumpingRight;
-		}
-		if (orientation == game->orientationLeft) {
-			animation = aJumpingLeft;
-		}
-	}
 	if (state == game->stateMoving) {
 		if (vx != 0) {
-			if (orientation == game->orientationRight) {
-				animation = aRunningRight;
+			if (orientacionCaminar == game->orientationRight) {
+				animacionCuerpo = caminarDerecha;
+				animacionCabeza = dispararDerecha;
 			}
-			if (orientation == game->orientationLeft) {
-				animation = aRunningLeft;
+
+			if (orientacionCaminar == game->orientationLeft) {
+				animacionCuerpo = caminarIzquierda;
+				animacionCabeza = dispararIzquierda;
 			}
 		}
-		if (vx == 0) {
-			if (orientation == game->orientationRight) {
-				animation = aIdleRight;
+
+		if (vy != 0) {
+			if (orientacionCaminar == game->orientationBottom) {
+				animacionCuerpo = caminarAbajo;
+				animacionCabeza = dispararArriba;
 			}
-			if (orientation == game->orientationLeft) {
-				animation = aIdleLeft;
+
+			if (orientacionCaminar == game->orientationUp) {
+				animacionCuerpo = caminarArriba;
+				animacionCabeza = dispararAbajo;
 			}
+		}
+
+		if (vx == 0 && vy == 0) {
+			animacionCuerpo = cuerpoParado;
 		}
 	}
 
+	
+	if (orientacionDisparos == game->orientationBottom) {
+		animacionCabeza = dispararAbajo;
+	}
+
+	if (orientacionDisparos == game->orientationUp) {
+		animacionCabeza = dispararArriba;
+	}
+
+	if (orientacionDisparos == game->orientationLeft) {
+		animacionCabeza = dispararIzquierda;
+	}
+
+	if (orientacionDisparos == game->orientationRight) {
+		animacionCabeza = dispararDerecha;
+	}
 
 	if (shootTime > 0) {
 		shootTime--;
@@ -82,15 +112,14 @@ void Player::update() {
 	if (bombTime > 0) {
 		bombTime--;
 	}
-
 }
 
 void Player::moveX(float axis) {
-	vx = axis * 3;
+	vx = axis * 5;
 }
 
 void Player::moveY(float axis) {
-	vy = axis * 3;
+	vy = axis * 5;
 }
 
 Projectile* Player::shoot() {
@@ -108,11 +137,13 @@ Projectile* Player::shoot() {
 
 void Player::draw(float scrollX, float scrollY) {
 	if (invulnerableTime == 0) {
-		animation->draw(x - scrollX, y - scrollY);
+		animacionCuerpo->draw(x - scrollX, y - scrollY);
+		animacionCabeza->draw(x - scrollX, y - scrollY - 23);
 	}
 	else {
 		if (invulnerableTime % 10 >= 0 && invulnerableTime % 10 <= 5) {
-			animation->draw(x - scrollX, y - scrollY);
+			animacionCuerpo->draw(x - scrollX, y - scrollY);
+			animacionCabeza->draw(x - scrollX, y - scrollY - 23);
 		}
 	}
 }

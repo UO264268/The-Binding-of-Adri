@@ -36,7 +36,6 @@ public:
 	void update() override;
 	void draw() override;
 	void keysToControls(SDL_Event event);
-	void mouseToControls(SDL_Event event); // USO DE MOUSE
 	void gamePadToControls(SDL_Event event); // USO DE GAMEPAD
 	void loadMap(string name);
 	void loadMapObject(char character, float x, float y);
@@ -46,8 +45,6 @@ public:
 	// Elementos de interfaz
 	SDL_GameController* gamePad;
 	Pad* pad;
-	Actor* buttonJump;
-	Actor* buttonShoot;
 
 	Tile* cup; // Elemento de final de nivel
 	Space* space;

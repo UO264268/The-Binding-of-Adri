@@ -3,7 +3,7 @@
 Bomba::Bomba(float x, float y, Game* game)
 	: Actor("res/moneda.png", x, y, 40, 40, game) {
 
-	aExploding = new Animation("res/bomba.png", width, height, 88, 21, 4, 4, false, game);
+	aExploding = new Animation("res/recolectables/bomba.png", width, height, 88, 21, 4, 4, false, game);
 	animation = aExploding;
 
 	a = 1;

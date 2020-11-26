@@ -51,6 +51,7 @@ public:
 	int const stateExploding = 7;
 	int const stateExploited = 8;
 
+	int const noDisparando = 0;
 	int const orientationRight = 1;
 	int const orientationLeft = 2;
 	int const orientationUp = 3;

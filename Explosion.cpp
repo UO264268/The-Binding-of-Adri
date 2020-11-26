@@ -5,7 +5,7 @@ Explosion::Explosion(float x, float y, Game* game)
 	
 	state = game->stateExploding;
 
-	aExploding = new Animation("res/explosion.png", width, height,
+	aExploding = new Animation("res/otros/explosion.png", width, height,
 		1152, 96, 2, 12, false, game);
 
 	animation = aExploding;

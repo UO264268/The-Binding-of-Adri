@@ -4,7 +4,7 @@ ProjectileEnemigo::ProjectileEnemigo(float x, float y, Game* game) :
 	Actor("res/enemy2_disparo.png", x, y, 17, 17, game) {
 	vx = -9;
 	vy = 0; // La gravedad inicial es 1
-	animacion = new Animation("res/enemy2_disparo.png", width, height,
+	animacion = new Animation("res/enemigos/disparo.png", width, height,
 		24, 24, 1, 1, true, game);
 
 }
@@ -13,7 +13,7 @@ ProjectileEnemigo::ProjectileEnemigo(float x, float y, float vx, float vy, Game*
 	Actor("res/enemy2_disparo.png", x, y, 17, 17, game) {
 	this->vx = vx;
 	this->vy = vy; // La gravedad inicial es 1
-	animacion = new Animation("res/enemy2_disparo.png", width, height,
+	animacion = new Animation("res/enemigos/disparo.png", width, height,
 		24, 24, 1, 1, true, game);
 
 }

@@ -20,18 +20,23 @@ public:
 
 	float lifes = 3;
 	int invulnerableTime = 0;
-	int orientation;
+	int orientacionCaminar;
+	int orientacionDisparos;
 	int state;
-	Animation* aIdleRight;
-	Animation* aIdleLeft;
-	Animation* aJumpingRight;
-	Animation* aJumpingLeft;
-	Animation* aRunningRight;
-	Animation* aRunningLeft;
-	Animation* aShootingRight;
-	Animation* aShootingLeft;
-	Animation* animation; // Referencia a la animación mostrada
+	
+	Animation* caminarDerecha;
+	Animation* caminarIzquierda;
+	Animation* caminarAbajo;
+	Animation* caminarArriba;
+
+	
+
+	Animation* cuerpoParado;
+
+	Animation* animacionCabeza; // Referencia a la animación mostrada
+	Animation* animacionCuerpo; // Referencia a la animación mostrada
 	Audio* audioShoot;
+
 	int shootCadence = 20;
 	int shootTime = 0;
 	

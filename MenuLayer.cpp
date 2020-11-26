@@ -8,8 +8,8 @@ MenuLayer::MenuLayer(Game* game)
 
 void MenuLayer::init() {
 	// Fondo normal, sin velocidad
-	background = new Background("res/menu_fondo.png", WIDTH * 0.5, HEIGHT * 0.5, game);
-	button = new Actor("res/boton_jugar.png", WIDTH * 0.5, HEIGHT * 0.7, 232, 72, game);
+	background = new Background("res/menu/menu_fondo.png", WIDTH * 0.5, HEIGHT * 0.5, game);
+	button = new Actor("res/menu/boton_jugar.png", WIDTH * 0.5, HEIGHT * 0.7, 232, 72, game);
 }
 
 void MenuLayer::draw() {
@@ -41,18 +41,12 @@ void MenuLayer::processControls() {
 		if (event.type == SDL_KEYDOWN) {
 			game->input = game->inputKeyboard;
 		}
-		if (event.type == SDL_MOUSEBUTTONDOWN) {
-			game->input = game->inputMouse;
-		}
 		// Procesar teclas
 		if (game->input == game->inputGamePad) {  // gamePAD
 			gamePadToControls(event);
 		}
 		if (game->input == game->inputKeyboard) {
 			keysToControls(event);
-		}
-		if (game->input == game->inputMouse) {
-			mouseToControls(event);
 		}
 	}
 
@@ -75,22 +69,9 @@ void MenuLayer::keysToControls(SDL_Event event) {
 		case SDLK_1:
 			game->scale();
 			break;
-		case SDLK_SPACE: // dispara
+		default: // dispara
 			controlContinue = true;
 			break;
-		}
-	}
-}
-
-void MenuLayer::mouseToControls(SDL_Event event) {
-	// Modificación de coordenadas por posible escalado
-	float motionX = event.motion.x / game->scaleLower;
-	float motionY = event.motion.y / game->scaleLower;
-
-	// Cada vez que hacen click
-	if (event.type == SDL_MOUSEBUTTONDOWN) {
-		if (button->containsPoint(motionX, motionY)) {
-			controlContinue = true;
 		}
 	}
 }
