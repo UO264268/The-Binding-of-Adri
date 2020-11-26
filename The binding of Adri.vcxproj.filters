@@ -49,15 +49,18 @@
     <Filter Include="Archivos de encabezado\Actores\Recolectable">
       <UniqueIdentifier>{4fb78d09-47c9-4492-95d4-ff879925a5c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Actores\Player">
+      <UniqueIdentifier>{9ae449c0-6fe0-4aac-b2e1-6096a4da92c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Actores\Player">
+      <UniqueIdentifier>{bd3871bf-2dc6-439e-aa70-32dd5e90ffc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
     <ClInclude Include="Background.h">
-      <Filter>Archivos de encabezado\Actores</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
@@ -129,15 +132,21 @@
     <ClInclude Include="MenuLayer.h">
       <Filter>Archivos de encabezado\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Archivos de encabezado\Actores\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CabezaJugador.h">
+      <Filter>Archivos de encabezado\Actores\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CuerpoJugador.h">
+      <Filter>Archivos de encabezado\Actores\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
     <ClCompile Include="Background.cpp">
-      <Filter>Archivos de origen\Actores</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
       <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
@@ -208,6 +217,15 @@
     </ClCompile>
     <ClCompile Include="MenuLayer.cpp">
       <Filter>Archivos de origen\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Archivos de origen\Actores\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CabezaJugador.cpp">
+      <Filter>Archivos de origen\Actores\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CuerpoJugador.cpp">
+      <Filter>Archivos de origen\Actores\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

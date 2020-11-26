@@ -153,6 +153,8 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BombaRecolectable.h" />
+    <ClInclude Include="CabezaJugador.h" />
+    <ClInclude Include="CuerpoJugador.h" />
     <ClInclude Include="EnemigoBasico.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Audio.h" />
@@ -181,6 +183,8 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BombaRecolectable.cpp" />
+    <ClCompile Include="CabezaJugador.cpp" />
+    <ClCompile Include="CuerpoJugador.cpp" />
     <ClCompile Include="EnemigoBasico.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Audio.cpp" />

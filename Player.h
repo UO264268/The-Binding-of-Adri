@@ -5,11 +5,14 @@
 #include "Audio.h"
 #include "Animation.h" // incluir animacion 
 #include "Bomba.h"
+#include "CabezaJugador.h"
+#include "CuerpoJugador.h"
 
 class Player : public Actor
 {
 public:
 	Player(float x, float y, Game* game);
+	
 	Projectile* shoot();
 	void update();
 	void moveX(float axis);
@@ -24,22 +27,9 @@ public:
 	int orientacionDisparos;
 	int state;
 	
-	Animation* caminarDerecha;
-	Animation* caminarIzquierda;
-	Animation* caminarAbajo;
-	Animation* caminarArriba;
+	CabezaJugador* cabezaJugador;
+	CuerpoJugador* cuerpoJugador;
 
-	
-
-	Animation* cuerpoParado;
-
-	Animation* animacionCabeza; // Referencia a la animación mostrada
-	Animation* animacionCuerpo; // Referencia a la animación mostrada
-	Audio* audioShoot;
-
-	int shootCadence = 20;
-	int shootTime = 0;
-	
 	int bombCadence = 8;
 	int bombTime = 0;
 

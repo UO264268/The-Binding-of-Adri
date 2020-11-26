@@ -111,7 +111,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case 'J': {
 		player = new Player(x, y, game);
 		// modificación para empezar a contar desde el suelo.
-		player->y = player->y - player->height / 2;
+		//player->y = player->y - player->height / 2;
 		space->addDynamicActor(player);
 		break;
 	}
