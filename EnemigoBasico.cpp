@@ -1,19 +1,36 @@
 #include "EnemigoBasico.h"
 
 EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
-	: Enemy("res/enemigo.png", x, y, 36, 40, game) {
+	: Enemy("res/enemigo.png", x, y, 48, 23, game) {
 
 	state = game->stateMoving;
 
-	aDying = new Animation("res/enemigo_morir.png", width, height,
-		280, 40, 1, 8, false, game);
+	aHitted = new Animation("res/enemigos/cuerpo_enemigo_hitted.png", width, height,
+		32, 32, 6, 1, false, game);
 
-	aHitted = new Animation("res/enemigo_hitted.png", width, height,
-		36, 40, 6, 1, false, game);
+	aHittedCabeza = new Animation("res/enemigos/enemigo_basico_cabeza_hitted.png", width, height,
+		28, 25, 6, 1, false, game);
 
-	aMoving = new Animation("res/enemigo_movimiento.png", width, height,
-		108, 40, 6, 3, true, game);
-	animation = aMoving;
+	aDying = new Animation("res/enemigos/cuerpo_enemigo_hitted.png", width, height,
+		32, 32, 6, 1, false, game);
+
+	movimientoX = new Animation("res/enemigos/enemigo_caminar_lado.png", width, height,
+		256, 32, 2, 8, true, game);
+
+	movimientoY = new Animation("res/enemigos/enemigo_caminar_defrente.png", width, height,
+		320, 32, 2, 10, true, game);
+
+	parado = new Animation("res/enemigos/cuerpo_enemigo_parado.png", width, height,
+		32, 32, 1, 1, true, game);
+
+	sangre = new Animation("res/enemigos/enemigo_sinCabeza_cabeza.png", width, height,
+		192, 32, 5, 4, true, game);
+
+	aCabeza = new Animation("res/enemigos/enemigo_basico_cabeza.png", width, height,
+		28, 25, 5, 1, true, game);
+
+	animationCuerpo = movimientoX;
+	animationCabeza = aCabeza;
 
 	vx = 1;
 	vy = 0;
@@ -30,7 +47,9 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 
 void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
-	bool endAnimation = animation->update();
+	bool endAnimation = animationCuerpo->update();
+	animationCabeza->update();
+	sangre->update();
 
 	// Acabo la animación, no sabemos cual
 	if (endAnimation) {
@@ -45,13 +64,26 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	}
 
 	if (state == game->stateMoving) {
-		animation = aMoving;
+		if (vx != 0) {
+			animationCuerpo = movimientoX;
+		}
+
+		if (vy != 0) {
+			animationCuerpo = movimientoY;
+		}
+
+		if (vy == 0 && vx == 0) {
+			animationCuerpo = parado;
+		}
+
+		animationCabeza = aCabeza;
 	}
 	if (state == game->stateDying) {
-		animation = aDying;
+		animationCuerpo = aDying;
 	}
 	if (state == game->stateHitted) {
-		animation = aHitted;
+		animationCuerpo = aHitted;
+		animationCabeza = aHittedCabeza;
 	}
 
 	// Establecer velocidad
@@ -81,6 +113,7 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	}
 	else {
 		vx = 0;
+		vy = 0;
 	}
 
 }
@@ -90,6 +123,7 @@ Enemy* EnemigoBasico::impacted(int damage) {
 		if ((vidas - damage) > 0) {
 			state = game->stateHitted;
 			aHitted->currentFrame = 0;
+			aHittedCabeza->currentFrame = 0;
 			vidas = vidas - damage;
 			// 100 actualizaciones 
 		}
@@ -112,6 +146,8 @@ Enemy* EnemigoBasico::impacted(int damage) {
 }
 
 void EnemigoBasico::draw(float scrollX, float scrollY) {
-	animation->draw(x - scrollX, y - scrollY);
+	animationCuerpo->draw(x - scrollX, y - scrollY);
+	animationCabeza->draw(x - scrollX, y - scrollY - 13);
+	sangre->draw(x - scrollX, y - scrollY - 10);
 }
 

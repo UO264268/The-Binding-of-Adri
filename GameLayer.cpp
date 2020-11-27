@@ -39,6 +39,7 @@ void GameLayer::init() {
 	projectiles.clear(); // Vaciar por si reiniciamos el juego
 	projectilesEnemigos.clear();
 	explosiones.clear();
+	puertas.clear();
 
 	loadMap("res/mapas/" + to_string(game->currentLevel) + ".txt");
 }
@@ -56,7 +57,7 @@ void GameLayer::loadMap(string name) {
 		for (int i = 0; getline(streamFile, line); i++) {
 			istringstream streamLine(line);
 			mapWidth = line.length() * 40; // Ancho del mapa en pixels
-			mapHeight = (i+1)*40;
+			mapHeight = (i+1)*32;
 			// Por carácter (en cada línea)
 			for (int j = 0; !streamLine.eof(); j++) {
 				streamLine >> character; // Leer character 
@@ -75,19 +76,10 @@ void GameLayer::loadMap(string name) {
 void GameLayer::loadMapObject(char character, float x, float y)
 {
 	switch (character) {
-	case 'C': {
-		cup = new Tile("res/recolectables/copa.png", x, y, 32, 40, false, game);
-		// modificación para empezar a contar desde el suelo.
-		cup->y = cup->y - cup->height / 2;
-		space->addDynamicActor(cup); // Realmente no hace falta
-		break;
-	}
 	case 'E': {
 		Enemy* enemy = NULL;
 
-		//int num = rand() % 4;
-
-		int num = 1;
+		int num = rand() % 4;
 
 		if (num == 0) {
 			enemy = new EnemigoBasico(x, y, game);
@@ -147,7 +139,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
-	case '1': {
+	case '7': {
 		Tile* tile = new Tile("res/mapeado/pared_esquina_arriba_izquierda.png", x, y, false, game);
 		// modificación para empezar a contar desde el suelo.
 		tile->y = tile->y - tile->height / 2;
@@ -155,7 +147,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
-	case '2': {
+	case '9': {
 		Tile* tile = new Tile("res/mapeado/pared_esquina_arriba_derecha.png", x, y, false, game);
 		// modificación para empezar a contar desde el suelo.
 		tile->y = tile->y - tile->height / 2;
@@ -171,11 +163,42 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
-	case '4': {
+	case '1': {
 		Tile* tile = new Tile("res/mapeado/pared_esquina_abajo_izquierda.png", x, y, false, game);
 		// modificación para empezar a contar desde el suelo.
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}case '8': {
+		Puerta* tile = new Puerta(game->puertaArriba, x, y, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		puertas.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '4': {
+		Puerta* tile = new Puerta(game->puertaIzquierda, x, y, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		puertas.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '6': {
+		Puerta* tile = new Puerta(game->puertaDerecha, x, y, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		puertas.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case '2': {
+		Puerta* tile = new Puerta(game->puertaAbajo, x, y, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		puertas.push_back(tile);
 		space->addStaticActor(tile);
 		break;
 	}
@@ -331,7 +354,7 @@ void GameLayer::update() {
 	}
 
 	// Nivel superado
-	if (cup->isOverlap(player)) {
+	/*if (cup->isOverlap(player)) {
 		game->currentLevel++;
 		if (game->currentLevel > game->finalLevel) {
 			game->currentLevel = 0;
@@ -340,7 +363,7 @@ void GameLayer::update() {
 			WIDTH, HEIGHT, game);
 		pause = true;
 		init();
-	}
+	}*/
 	
 	space->update();
 	background->update();
@@ -420,6 +443,16 @@ void GameLayer::update() {
 		if (player->isOverlap(enemy)) {
 			player->loseLife(enemy->daño);
 			if (player->lifes <= 0) {
+				init();
+				return;
+			}
+		}
+	}
+
+	for (auto const& puerta : puertas) {
+		if (player->isOverlap(puerta)) {
+			if(puerta->abierta){
+				game->currentLevel = puerta->siguienteNivel();
 				init();
 				return;
 			}
@@ -522,7 +555,7 @@ void GameLayer::update() {
 		for (auto const& explosion : explosiones) {
 			if (!explosion->hitted) {
 				if (enemy->isOverlap(explosion)) {
-					Enemy* newEnemy = enemy->impacted();
+					Enemy* newEnemy = enemy->impacted(2);
 
 					if (newEnemy != NULL) {
 						newEnemies.push_back(newEnemy);
@@ -573,6 +606,32 @@ void GameLayer::update() {
 					if (!pInList) {
 						deleteTiles.push_back(tile);
 					}
+				}
+			}
+		}
+	}
+
+	for (auto const& puerta : puertas) {
+		for (auto const& projectile : projectiles) {
+			if (puerta->isOverlap(projectile)) {
+				bool pInList = std::find(deleteProjectiles.begin(),
+					deleteProjectiles.end(),
+					projectile) != deleteProjectiles.end();
+
+				if (!pInList) {
+					deleteProjectiles.push_back(projectile);
+				}
+			}
+		}
+
+		for (auto const& projectile : projectilesEnemigos) {
+			if (puerta->isOverlap(projectile)) {
+				bool pInList = std::find(deleteProjectilesEnemigos.begin(),
+					deleteProjectilesEnemigos.end(),
+					projectile) != deleteProjectilesEnemigos.end();
+
+				if (!pInList) {
+					deleteProjectilesEnemigos.push_back(projectile);
 				}
 			}
 		}
@@ -668,6 +727,12 @@ void GameLayer::update() {
 
 	textBombas->content = to_string(player->bombas);
 	textVidas->content = to_string(player->lifes);
+
+	if (enemies.size() == 0) {
+		for (auto const& puerta : puertas) {
+			puerta->abrir();
+		}
+	}
 }
 
 void GameLayer::calculateScroll() {
@@ -684,6 +749,9 @@ void GameLayer::draw() {
 	for (auto const& tile : tiles) {
 		tile->draw(scrollX, scrollY);
 	}
+	for (auto const& puerta : puertas) {
+		puerta->draw(scrollX, scrollY);
+	}
 	for (auto const& projectile : projectilesEnemigos) {
 		projectile->draw(scrollX, scrollY);
 	}
@@ -691,7 +759,7 @@ void GameLayer::draw() {
 		projectile->draw(scrollX, scrollY);
 	}
 	
-	cup->draw(scrollX, scrollY);
+	//cup->draw(scrollX, scrollY);
 	player->draw(scrollX, scrollY);
 
 	for (auto const& enemy : enemies) {

@@ -141,6 +141,9 @@
     <ClInclude Include="CuerpoJugador.h">
       <Filter>Archivos de encabezado\Actores\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Puerta.h">
+      <Filter>Archivos de encabezado\Actores</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -226,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="CuerpoJugador.cpp">
       <Filter>Archivos de origen\Actores\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Puerta.cpp">
+      <Filter>Archivos de origen\Actores</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@
 #include "MoscaBomba.h"
 #include "Explosion.h"
 #include "Bomba.h"
+#include "Puerta.h"
 
 #include "Audio.h"
 #include "Space.h" // importar
@@ -67,6 +68,7 @@ public:
 	list<Recolectable*> recolectables;
 	list<Explosion*> explosiones;
 	list<Bomba*> bombas;
+	list<Puerta*> puertas;
 
 	bool controlContinue = false;
 	bool controlShootUp = false;

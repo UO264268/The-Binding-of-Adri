@@ -57,6 +57,11 @@ public:
 	int const orientationUp = 3;
 	int const orientationBottom = 4;
 
+	int const puertaIzquierda = 4;
+	int const puertaArriba = 8;
+	int const puertaAbajo = 2;
+	int const puertaDerecha = 6;
+
 	int const bomba = 1;
 	int const corazon = 2;
 };
