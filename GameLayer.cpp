@@ -101,7 +101,18 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		break;
 	}
 	case 'J': {
-		player = new Player(x, y, game);
+		if (entrada == game->puertaAbajo) {
+			player = new Player(x, 45, game);
+		} else if (entrada == game->puertaArriba) {
+			player = new Player(x, 690, game);
+		} else if (entrada == game->puertaIzquierda) {
+			player = new Player(1210, y, game);
+		} else if (entrada == game->puertaDerecha) {
+			player = new Player(70, y, game);
+		} else {
+			player = new Player(x, y, game);
+		}
+		
 		// modificación para empezar a contar desde el suelo.
 		//player->y = player->y - player->height / 2;
 		space->addDynamicActor(player);
@@ -349,6 +360,64 @@ void GameLayer::processControls() {
 }
 
 void GameLayer::update() {
+	list<Enemy*> deleteEnemies;
+
+	if (game->currentLevel == 0 && passed0) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 1 && passed1) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 2 && passed2) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 3 && passed3) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 4 && passed4) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 5 && passed5) {
+		for(auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 6 && passed6) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 7 && passed7) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 8 && passed8) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 9 && passed9) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+	if (game->currentLevel == 10 && passed10) {
+		for (auto const& enemy : enemies) {
+			deleteEnemies.push_back(enemy);
+		}
+	}
+
 	if (pause) {
 		return;
 	}
@@ -368,8 +437,6 @@ void GameLayer::update() {
 	space->update();
 	background->update();
 	player->update();
-
-	list<Enemy*> deleteEnemies;
 
 	for (auto const& enemy : enemies) {
 		enemy->update(player->x, player->y);
@@ -453,6 +520,7 @@ void GameLayer::update() {
 		if (player->isOverlap(puerta)) {
 			if(puerta->abierta){
 				game->currentLevel = puerta->siguienteNivel();
+				entrada = puerta->lado;
 				init();
 				return;
 			}
@@ -732,7 +800,43 @@ void GameLayer::update() {
 		for (auto const& puerta : puertas) {
 			puerta->abrir();
 		}
+
+		if (game->currentLevel == 0) {
+			passed0 = true;
+		}
+		if (game->currentLevel == 1) {
+			passed1 = true;
+		}
+		if (game->currentLevel == 2) {
+			passed2 = true;
+		}
+		if (game->currentLevel == 3) {
+			passed3 = true;
+		}
+		if (game->currentLevel == 4) {
+			passed4 = true;
+		}
+		if (game->currentLevel == 5) {
+			passed5 = true;
+		}
+		if (game->currentLevel == 6) {
+			passed6 = true;
+		}
+		if (game->currentLevel == 7) {
+			passed7 = true;
+		}
+		if (game->currentLevel == 8) {
+			passed8 = true;
+		}
+		if (game->currentLevel == 9) {
+			passed9 = true;
+		}
+		if (game->currentLevel == 10) {
+			passed10 = true;
+		}
 	}
+
+	cout << "x " << player->x << " y " << player->y<< endl;
 }
 
 void GameLayer::calculateScroll() {

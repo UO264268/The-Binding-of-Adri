@@ -80,5 +80,19 @@ public:
 	int controlMoveX = 0;
 
 	bool controlShoot = false;
+
+	bool passed0 = false;
+	bool passed1 = false;
+	bool passed2 = false;
+	bool passed3 = false;
+	bool passed4 = false;
+	bool passed5 = false;
+	bool passed6 = false;
+	bool passed7 = false;
+	bool passed8 = false;
+	bool passed9 = false;
+	bool passed10 = false;
+
+	int entrada = 0;
 };
 
