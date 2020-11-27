@@ -1,6 +1,6 @@
 #include "GameLayer.h"
 
-GameLayer::GameLayer(Game* game)
+GameLayer::GameLayer(Game* game) //https://gyazo.com/17d61411a9793ae013f0b8820e8fbf03
 	: Layer(game) {
 	//llama al constructor del padre : Layer(renderer)
 	pause = true;
