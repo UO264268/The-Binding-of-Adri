@@ -243,6 +243,14 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
+	case 'C': {
+		Tile* tile = new Caca(x, y, game);
+		// modificación para empezar a contar desde el suelo.
+		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
 	}
 }
 
@@ -655,6 +663,20 @@ void GameLayer::update() {
 
 	for (auto const& tile : tiles) {
 		for (auto const& projectile : projectiles) {
+			if (tile->isOverlap(projectile) && tile->destructibleByShoot) {
+				((Caca*)tile)->perderVida();
+
+				if (((Caca*)tile)->vida == 0) {
+					bool pInList = std::find(deleteTiles.begin(),
+						deleteTiles.end(),
+						tile) != deleteTiles.end();
+
+					if (!pInList) {
+						deleteTiles.push_back(tile);
+					}
+				}
+			}
+
 			if (tile->isOverlap(projectile)){
 				bool pInList = std::find(deleteProjectiles.begin(),
 					deleteProjectiles.end(),
@@ -664,6 +686,7 @@ void GameLayer::update() {
 					deleteProjectiles.push_back(projectile);
 				}
 			}
+			
 		}
 
 		for (auto const& projectile : projectilesEnemigos) {

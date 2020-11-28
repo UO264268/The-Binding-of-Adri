@@ -20,6 +20,7 @@
 #include "Explosion.h"
 #include "Bomba.h"
 #include "Puerta.h"
+#include "Caca.h"
 
 #include "Audio.h"
 #include "Space.h" // importar

@@ -154,6 +154,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BombaRecolectable.h" />
     <ClInclude Include="CabezaJugador.h" />
+    <ClInclude Include="Caca.h" />
     <ClInclude Include="CuerpoJugador.h" />
     <ClInclude Include="EnemigoBasico.h" />
     <ClInclude Include="Animation.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BombaRecolectable.cpp" />
     <ClCompile Include="CabezaJugador.cpp" />
+    <ClCompile Include="Caca.cpp" />
     <ClCompile Include="CuerpoJugador.cpp" />
     <ClCompile Include="EnemigoBasico.cpp" />
     <ClCompile Include="Animation.cpp" />

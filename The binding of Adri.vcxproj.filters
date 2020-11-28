@@ -144,6 +144,9 @@
     <ClInclude Include="Puerta.h">
       <Filter>Archivos de encabezado\Actores</Filter>
     </ClInclude>
+    <ClInclude Include="Caca.h">
+      <Filter>Archivos de encabezado\Actores\Tiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -232,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="Puerta.cpp">
       <Filter>Archivos de origen\Actores</Filter>
+    </ClCompile>
+    <ClCompile Include="Caca.cpp">
+      <Filter>Archivos de origen\Actores\Tiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
