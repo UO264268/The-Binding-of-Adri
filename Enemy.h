@@ -14,6 +14,7 @@ public:
 	virtual Enemy* impacted(int damage = 1); // Recibe impacto y pone animación de morir
 	virtual ProjectileEnemigo* shoot();
 	virtual Explosion* explode();
+	virtual void deleteAnimations();
 	float vxIntelligence;
 	float vyIntelligence;
 	int state;

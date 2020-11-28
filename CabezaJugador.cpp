@@ -16,6 +16,13 @@ CabezaJugador::CabezaJugador(float x, float y, Game* game)
 	animacion = dispararAbajo;
 }
 
+void CabezaJugador::deleteAnimations() {
+	delete dispararDerecha;
+	delete dispararIzquierda;
+	delete dispararArriba;
+	delete dispararAbajo;
+}
+
 void CabezaJugador::update(int orientacionDisparos) {
 	bool endAnimationCabeza = animacion->update();
 

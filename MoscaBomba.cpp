@@ -25,6 +25,14 @@ MoscaBomba::MoscaBomba(float x, float y, Game* game)
 
 }
 
+void MoscaBomba::deleteAnimations() {
+	
+	delete aHitted;
+	delete aShooting;
+	delete aMoving;
+	delete aDying;
+}
+
 void MoscaBomba::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();

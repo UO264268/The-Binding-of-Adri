@@ -11,6 +11,7 @@ public:
 	void update();
 	void draw(float scrollX = 0, float scrollY = 0) override;
 	Explosion* explode();
+	void deleteAnimations();
 
 	Animation* animation;
 	Animation* aExploding;

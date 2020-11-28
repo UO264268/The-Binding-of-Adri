@@ -42,6 +42,11 @@ void Puerta::draw(float scrollX, float scrollY) {
 	animacion->draw(x - scrollX, y - scrollY);
 }
 
+void Puerta::deleteAnimations() {
+	delete animacionCerrada;
+	delete animacionAbierta;
+}
+
 int Puerta::siguienteNivel() {
 	switch (nivelActual) {
 	case 0:

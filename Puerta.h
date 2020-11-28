@@ -10,6 +10,7 @@ public:
 	int siguienteNivel();
 	void abrir();
 	void draw(float scrollX = 0, float scrollY = 0) override;
+	void deleteAnimations();
 	
 	int lado;
 	int nivelActual;

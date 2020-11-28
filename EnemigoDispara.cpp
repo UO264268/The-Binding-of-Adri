@@ -25,6 +25,14 @@ EnemigoDispara::EnemigoDispara(float x, float y, Game* game)
 	jugadorY = 0;
 }
 
+void EnemigoDispara::deleteAnimations() {
+	
+	delete aHitted;
+	delete aShooting;
+	delete aMoving;
+	delete aDying;
+}
+
 void EnemigoDispara::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();

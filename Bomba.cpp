@@ -38,3 +38,7 @@ Explosion* Bomba::explode() {
 	}
 	return NULL;
 }
+
+void Bomba::deleteAnimations() {
+	delete aExploding;
+}

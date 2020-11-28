@@ -25,3 +25,7 @@ void ProjectileEnemigo::update() {
 void ProjectileEnemigo::draw(float scrollX, float scrollY) {
 	animacion->draw(x - scrollX, y - scrollY);
 }
+
+void ProjectileEnemigo::deleteAnimations() {
+	delete animacion;
+}

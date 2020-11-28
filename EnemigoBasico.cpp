@@ -151,3 +151,16 @@ void EnemigoBasico::draw(float scrollX, float scrollY) {
 	sangre->draw(x - scrollX, y - scrollY - 10);
 }
 
+void EnemigoBasico::deleteAnimations() {
+	delete aHitted;
+	delete aShooting;
+	delete aMoving;
+	delete aDying;
+	delete aCabeza;
+	delete aHittedCabeza;
+	delete movimientoX;
+	delete movimientoY;
+	delete parado;
+	delete sangre;
+}
+

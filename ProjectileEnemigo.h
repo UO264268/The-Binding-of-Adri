@@ -12,5 +12,6 @@ public:
 	Animation* animacion;
 	void update();
 	void draw(float scrollX, float scrollY) override;
+	void deleteAnimations();
 };
 

@@ -25,3 +25,7 @@ void Explosion::update() {
 void Explosion::draw(float scrollX, float scrollY) {
 	animation->draw(x - scrollX, y - scrollY);
 }
+
+void Explosion::deleteAnimations() {
+	delete aExploding;
+}

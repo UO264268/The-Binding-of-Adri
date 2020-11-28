@@ -11,5 +11,6 @@ public:
 	void draw(float scrollX, float scrollY) override;
 	Animation* animation;
 	virtual int recoger();
+	void deleteAnimations();
 };
 

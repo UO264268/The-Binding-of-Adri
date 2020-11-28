@@ -11,6 +11,7 @@ public:
 	Enemy* impacted(int damage = 1) override;
 	void draw(float scrollX, float scrollY) override;
 	ProjectileEnemigo* shoot() override;
+	void deleteAnimations() override;
 	int cdCambioDireccion = 0;
 
 	Animation* movimientoY;

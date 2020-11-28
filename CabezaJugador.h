@@ -15,6 +15,7 @@ public:
 	void moveX(float x);
 	void moveY(float y);
 	void draw(float scrollX = 0, float scrollY = 0) override;
+	void deleteAnimations();
 
 	Animation* dispararDerecha;
 	Animation* dispararIzquierda;

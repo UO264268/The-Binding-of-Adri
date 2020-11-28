@@ -35,11 +35,17 @@ void GameLayer::init() {
 	backgroundBombas = new Actor("res/recolectables/icono_bomba.png",
 		WIDTH * 0.76, HEIGHT * 0.05, 39, 39, game);
 
+	for (auto const& puerta : puertas) {
+		puerta->deleteAnimations();
+		delete puerta;
+	}
+
 	enemies.clear(); // Vaciar por si reiniciamos el juego
 	projectiles.clear(); // Vaciar por si reiniciamos el juego
 	projectilesEnemigos.clear();
 	explosiones.clear();
 	puertas.clear();
+	recolectables.clear();
 
 	loadMap("res/mapas/" + to_string(game->currentLevel) + ".txt");
 }
@@ -113,6 +119,8 @@ void GameLayer::loadMapObject(char character, float x, float y)
 			player = new Player(x, y, game);
 		}
 		
+		player->bombas = bombasAntes;
+		player->lifes = vidasAntes;
 		// modificación para empezar a contar desde el suelo.
 		//player->y = player->y - player->height / 2;
 		space->addDynamicActor(player);
@@ -462,6 +470,8 @@ void GameLayer::update() {
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
 		space->removeDynamicActor(delEnemy);
+		delEnemy->deleteAnimations();
+		delete delEnemy;
 	}
 	deleteEnemies.clear();
 
@@ -498,6 +508,7 @@ void GameLayer::update() {
 			if (player->isOverlap(explosion)) {
 				player->loseLife(1);
 				if (player->lifes <= 0) {
+					player->deleteAnimations();
 					init();
 					return;
 				}
@@ -510,6 +521,7 @@ void GameLayer::update() {
 		if (player->isOverlap(enemy)) {
 			player->loseLife(enemy->daño);
 			if (player->lifes <= 0) {
+				player->deleteAnimations();
 				init();
 				return;
 			}
@@ -521,6 +533,7 @@ void GameLayer::update() {
 			if(puerta->abierta){
 				game->currentLevel = puerta->siguienteNivel();
 				entrada = puerta->lado;
+				player->deleteAnimations();
 				init();
 				return;
 			}
@@ -555,6 +568,7 @@ void GameLayer::update() {
 		if (player->isOverlap(projectile)) {
 			player->loseLife(1);
 			if (player->lifes <= 0) {
+				player->deleteAnimations();
 				init();
 				return;
 			}
@@ -748,12 +762,15 @@ void GameLayer::update() {
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
 		space->removeDynamicActor(delEnemy);
+		delEnemy->deleteAnimations();
+		delete delEnemy;
 	}
 	deleteEnemies.clear();
 
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
 		space->removeDynamicActor(delProjectile);
+		delProjectile->deleteAnimations();
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
@@ -761,6 +778,7 @@ void GameLayer::update() {
 	for (auto const& delProjectile : deleteProjectilesEnemigos) {
 		projectilesEnemigos.remove(delProjectile);
 		space->removeDynamicActor(delProjectile);
+		delProjectile->deleteAnimations();
 		delete delProjectile;
 	}
 	deleteProjectilesEnemigos.clear();
@@ -768,6 +786,7 @@ void GameLayer::update() {
 	for (auto const& delRecolectable : deleteRecolectables) {
 		recolectables.remove(delRecolectable);
 		space->removeDynamicActor(delRecolectable);
+		delRecolectable->deleteAnimations();
 		delete delRecolectable;
 	}
 	deleteRecolectables.clear();
@@ -782,6 +801,7 @@ void GameLayer::update() {
 	for (auto const& delExplosion : deleteExplosiones) {
 		explosiones.remove(delExplosion);
 		space->removeDynamicActor(delExplosion);
+		delExplosion->deleteAnimations();
 		delete delExplosion;
 	}
 	deleteExplosiones.clear();
@@ -789,6 +809,7 @@ void GameLayer::update() {
 	for (auto const& delBomba : deleteBombas) {
 		bombas.remove(delBomba);
 		space->removeDynamicActor(delBomba);
+		delBomba->deleteAnimations();
 		delete delBomba;
 	}
 	deleteBombas.clear();
@@ -835,8 +856,9 @@ void GameLayer::update() {
 			passed10 = true;
 		}
 	}
-
-	cout << "x " << player->x << " y " << player->y<< endl;
+	
+	vidasAntes = player->lifes;
+	bombasAntes = player->bombas;
 }
 
 void GameLayer::calculateScroll() {

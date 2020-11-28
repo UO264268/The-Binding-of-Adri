@@ -37,6 +37,17 @@ EnemigoSinCabeza::EnemigoSinCabeza(float x, float y, Game* game)
 	vidas = 2;
 }
 
+void EnemigoSinCabeza::deleteAnimations() {
+	delete aHitted;
+	delete aShooting;
+	delete aMoving;
+	delete aDying;
+	delete movimientoX;
+	delete movimientoY;
+	delete parado;
+	delete sangre;
+}
+
 void EnemigoSinCabeza::update(float xPlayer, float yPLayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();

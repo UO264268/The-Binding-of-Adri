@@ -19,6 +19,13 @@ CuerpoJugador::CuerpoJugador(float x, float y, Game* game)
 
 }
 
+void CuerpoJugador::deleteAnimations() {
+	delete caminarDerecha;
+	delete caminarAbajo;
+	delete caminarArriba;
+	delete cuerpoParado;
+	delete caminarIzquierda;
+}
 
 void CuerpoJugador::update(int orientacionCaminar) {
 	bool endAnimationCuerpo = animacion->update();

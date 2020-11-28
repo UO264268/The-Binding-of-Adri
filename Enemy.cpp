@@ -109,3 +109,11 @@ ProjectileEnemigo* Enemy::shoot() {
 Explosion* Enemy::explode() {
 	return NULL;
 }
+
+void Enemy::deleteAnimations() {
+	delete aHitted;
+	delete aShooting;
+	delete aMoving;
+	delete aDying;
+	delete animation;
+}

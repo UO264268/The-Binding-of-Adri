@@ -1,6 +1,6 @@
 7TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT9
 I..............................D
-I..............I...............D
+I..............i...............D
 I..............................D
 IRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRD
 IRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRD
@@ -18,6 +18,6 @@ IRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRD
 IRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRD
 IRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRD
 I..............................D
-I..............I...............D
+I..............i...............D
 I..............................D
 1BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB3

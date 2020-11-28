@@ -94,5 +94,7 @@ public:
 	bool passed10 = false;
 
 	int entrada = 0;
+	int vidasAntes = 3;
+	int bombasAntes = 1;
 };
 

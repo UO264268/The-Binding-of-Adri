@@ -11,6 +11,12 @@ Player::Player(float x, float y, Game* game)
 	state = game->stateMoving;
 }
 
+void Player::deleteAnimations() {
+	cabezaJugador->deleteAnimations();
+	cuerpoJugador->deleteAnimations();
+	delete cabezaJugador;
+	delete cuerpoJugador;
+}
 
 void Player::update() {
 	if (invulnerableTime > 0) {

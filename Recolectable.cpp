@@ -28,3 +28,7 @@ void Recolectable::draw(float scrollX, float scrollY) {
 int Recolectable::recoger() {
 	return 0;
 }
+
+void Recolectable::deleteAnimations() {
+	delete animation;
+}

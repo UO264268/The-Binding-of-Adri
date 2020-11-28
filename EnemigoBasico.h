@@ -11,6 +11,7 @@ public:
 	void update(float x = 0, float y = 0) override;
 	Enemy* impacted(int damage = 1) override;
 	void draw(float scrollX, float scrollY) override;
+	void deleteAnimations() override;
 
 	Animation* movimientoX;
 	Animation* movimientoY;
