@@ -147,6 +147,9 @@
     <ClInclude Include="Caca.h">
       <Filter>Archivos de encabezado\Actores\Tiles</Filter>
     </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -238,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="Caca.cpp">
       <Filter>Archivos de origen\Actores\Tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Archivos de origen\Actores\Recolectables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

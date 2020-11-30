@@ -16,15 +16,10 @@ CabezaJugador::CabezaJugador(float x, float y, Game* game)
 	animacion = dispararAbajo;
 }
 
-void CabezaJugador::deleteAnimations() {
-	delete dispararDerecha;
-	delete dispararIzquierda;
-	delete dispararArriba;
-	delete dispararAbajo;
-}
-
 void CabezaJugador::update(int orientacionDisparos) {
 	bool endAnimationCabeza = animacion->update();
+
+	this->orientacion = orientacionDisparos;
 
 	if (orientacionDisparos == game->orientationBottom) {
 		animacion = dispararAbajo;
@@ -55,20 +50,94 @@ void CabezaJugador::moveY(float axis) {
 	y = axis;
 }
 
-Projectile* CabezaJugador::shoot() {
-	if (shootTime == 0) {
-		audioShoot->play();
-		shootTime = shootCadence;
-		Projectile* projectile = new Projectile(x, y, game);
+list<Projectile*> CabezaJugador::shoot(bool tripleShoot, bool doubleShoot, bool brimstone) {
+	list<Projectile*> projectiles;
 
-		return projectile;
+	if (brimstone || shootTime == 0) {
+
+		if (doubleShoot & tripleShoot) {
+			if (orientacion == game->orientationBottom || orientacion == game->orientationUp) {
+				Projectile* projectile1 = new Projectile(x - 20, y, game);
+				Projectile* projectile2 = new Projectile(x - 10, y, game);
+				Projectile* projectile3 = new Projectile(x, y, game);
+				Projectile* projectile4 = new Projectile(x + 10, y, game);
+				Projectile* projectile5 = new Projectile(x + 20, y, game);
+
+				projectiles.push_back(projectile1);
+				projectiles.push_back(projectile2);
+				projectiles.push_back(projectile3);
+				projectiles.push_back(projectile4);
+				projectiles.push_back(projectile5);
+			}
+
+			if (orientacion == game->orientationLeft || orientacion == game->orientationRight) {
+				Projectile* projectile1 = new Projectile(x, y - 20, game);
+				Projectile* projectile2 = new Projectile(x, y - 10, game);
+				Projectile* projectile3 = new Projectile(x, y, game);
+				Projectile* projectile4 = new Projectile(x, y + 10, game);
+				Projectile* projectile5 = new Projectile(x, y + 20, game);
+
+				projectiles.push_back(projectile1);
+				projectiles.push_back(projectile2);
+				projectiles.push_back(projectile3);
+				projectiles.push_back(projectile4);
+				projectiles.push_back(projectile5);
+			}
+
+		}
+		else if(tripleShoot){
+			audioShoot->play();
+			shootTime = shootCadence;
+			
+			if (orientacion == game->orientationBottom || orientacion == game->orientationUp) {
+				Projectile* projectile1 = new Projectile(x - 10, y, game);
+				Projectile* projectile2 = new Projectile(x, y, game);
+				Projectile* projectile3 = new Projectile(x + 10, y, game);
+
+				projectiles.push_back(projectile1);
+				projectiles.push_back(projectile2);
+				projectiles.push_back(projectile3);
+			}
+
+			if (orientacion == game->orientationLeft || orientacion == game->orientationRight) {
+				Projectile* projectile1 = new Projectile(x, y - 10, game);
+				Projectile* projectile2 = new Projectile(x, y, game);
+				Projectile* projectile3 = new Projectile(x, y + 10, game);
+
+				projectiles.push_back(projectile1);
+				projectiles.push_back(projectile2);
+				projectiles.push_back(projectile3);
+			}
+		}
+		else if (doubleShoot) {
+			if (orientacion == game->orientationBottom || orientacion == game->orientationUp) {
+				Projectile* projectile1 = new Projectile(x - 10, y, game);
+				Projectile* projectile2 = new Projectile(x + 10, y, game);
+				
+				projectiles.push_back(projectile1);
+				projectiles.push_back(projectile2);
+			}
+
+			if (orientacion == game->orientationLeft || orientacion == game->orientationRight) {
+				Projectile* projectile1 = new Projectile(x, y - 10, game);
+				Projectile* projectile2 = new Projectile(x, y + 10, game);
+
+				projectiles.push_back(projectile1);
+				projectiles.push_back(projectile2);
+			}
+		}
+		else {
+			Projectile* projectile = new Projectile(x, y, game);
+			projectiles.push_back(projectile);
+		}
+		shootTime = shootCadence;
 	}
-	else {
-		return NULL;
-	}
+
+	return projectiles;
 }
 
 void CabezaJugador::draw(float scrollX, float scrollY) {
 	animacion->draw(x - scrollX, y - scrollY);	
 }
+
 

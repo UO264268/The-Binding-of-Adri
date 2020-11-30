@@ -12,6 +12,7 @@
 #include "Recolectable.h";
 #include "BombaRecolectable.h"
 #include "VidasRecolectable.h"
+#include "Item.h"
 
 #include "EnemigoBasico.h"
 #include "EnemigoSinCabeza.h"
@@ -28,6 +29,7 @@
 #include <fstream> // Leer ficheros
 #include <sstream> // Leer líneas / String
 #include <list>
+#include <exception>
 
 class GameLayer : public Layer
 {
@@ -70,6 +72,7 @@ public:
 	list<Explosion*> explosiones;
 	list<Bomba*> bombas;
 	list<Puerta*> puertas;
+	list<Item*> items;
 
 	bool controlContinue = false;
 	bool controlShootUp = false;
@@ -95,7 +98,5 @@ public:
 	bool passed10 = false;
 
 	int entrada = 0;
-	float vidasAntes = 3;
-	int bombasAntes = 1;
 };
 

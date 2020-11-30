@@ -11,13 +11,6 @@ Player::Player(float x, float y, Game* game)
 	state = game->stateMoving;
 }
 
-void Player::deleteAnimations() {
-	cabezaJugador->deleteAnimations();
-	cuerpoJugador->deleteAnimations();
-	delete cabezaJugador;
-	delete cuerpoJugador;
-}
-
 void Player::update() {
 	if (invulnerableTime > 0) {
 		invulnerableTime--;
@@ -62,8 +55,8 @@ void Player::moveY(float axis) {
 	vy = axis * 5;
 }
 
-Projectile* Player::shoot() {
-	return cabezaJugador->shoot();
+list<Projectile*> Player::shoot() {
+	return cabezaJugador->shoot(tripleShoot, doubleShoot, brimstone);
 }
 
 void Player::draw(float scrollX, float scrollY) {
@@ -80,14 +73,25 @@ void Player::draw(float scrollX, float scrollY) {
 }
 
 void Player::loseLife(float damage) {
+	if (oblea) {
+		damage = 0.5;
+	}
+
 	if (invulnerableTime <= 0) {
 		if ((lifes-damage) > 0) {
 			lifes = lifes - damage;
-			invulnerableTime = 100;
-			// 100 actualizaciones 
 		}
 		else {
 			lifes = 0;
+		}
+
+		invulnerableTime = 100;
+		// 100 actualizaciones 
+
+		if (collar_guppy && lifes == 0) {
+			lifes = rand() % 2;
+
+			cout << "Vidas: " << lifes << endl;
 		}
 	}
 }
@@ -101,6 +105,41 @@ Bomba* Player::ponerBomba() {
 	}
 	else {
 		return NULL;
+	}
+}
+
+void Player::moveToCoordinates(float x, float y) {
+	this->x = x;
+	this->y = y;
+
+	cuerpoJugador->x = x;
+	cuerpoJugador->y = y;
+
+	cabezaJugador->x = x;
+	cabezaJugador->y = y-17;
+}
+
+void Player::recogerItem(Item* i) {
+	items.push_back(i);
+
+	if (i->item == i->collar_guppy) {
+		this->collar_guppy = true;
+	}
+	if (i->item == i->brimstone) {
+		this->brimstone = true;
+	}
+	if (i->item == i->oblea) {
+		this->oblea = true;
+	}
+	if (i->item == i->ojo) {
+		this->tripleShoot = true;
+		cabezaJugador->shootCadence += 20;
+	}
+	if (i->item == i->vente_vente) {
+		this->doubleShoot = true;
+	}
+	if (i->item == i->venda) {
+		this->lifes++;
 	}
 }
 

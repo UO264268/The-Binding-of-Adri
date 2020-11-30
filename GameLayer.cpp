@@ -4,8 +4,8 @@ GameLayer::GameLayer(Game* game) //https://gyazo.com/17d61411a9793ae013f0b8820e8
 	: Layer(game) {
 	//llama al constructor del padre : Layer(renderer)
 	pause = true;
-	message = new Actor("res/menu/mensaje_como_jugar.png", WIDTH * 0.5, HEIGHT * 0.5,
-		WIDTH, HEIGHT, game);
+	message = new Actor("res/menu/controls.png", WIDTH * 0.5, HEIGHT * 0.5, WIDTH * 0.7, HEIGHT * 0.5,
+		game);
 
 	gamePad = SDL_GameControllerOpen(0);
 	init();
@@ -40,12 +40,40 @@ void GameLayer::init() {
 		delete puerta;
 	}
 
+	space->removeDynamicActor(player);
+
+	if (player == NULL) {
+		player = new Player(620, 384, game);
+	}
+	else {
+		if (entrada == game->puertaAbajo) {
+			player->moveToCoordinates(620, 50);
+		}
+		else if (entrada == game->puertaArriba) {
+			player->moveToCoordinates(620, 685);
+		}
+		else if (entrada == game->puertaIzquierda) {
+			player->moveToCoordinates(1205, 384);
+		}
+		else if (entrada == game->puertaDerecha) {
+			player->moveToCoordinates(75, 384);
+		}
+
+		if (player->lifes == 0) {
+			game->currentLevel = 0;
+			player = new Player(620, 384, game);
+		}
+	}
+
+	space->addDynamicActor(player);
+
 	enemies.clear(); // Vaciar por si reiniciamos el juego
 	projectiles.clear(); // Vaciar por si reiniciamos el juego
 	projectilesEnemigos.clear();
 	explosiones.clear();
 	puertas.clear();
 	recolectables.clear();
+	items.clear();
 
 	loadMap("res/mapas/" + to_string(game->currentLevel) + ".txt");
 }
@@ -104,26 +132,6 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		enemy->y = enemy->y - enemy->height / 2;
 		enemies.push_back(enemy);
 		space->addDynamicActor(enemy);
-		break;
-	}
-	case 'J': {
-		if (entrada == game->puertaAbajo) {
-			player = new Player(x, 45, game);
-		} else if (entrada == game->puertaArriba) {
-			player = new Player(x, 690, game);
-		} else if (entrada == game->puertaIzquierda) {
-			player = new Player(1210, y, game);
-		} else if (entrada == game->puertaDerecha) {
-			player = new Player(70, y, game);
-		} else {
-			player = new Player(x, y, game);
-		}
-		
-		player->bombas = bombasAntes;
-		player->lifes = vidasAntes;
-		// modificación para empezar a contar desde el suelo.
-		//player->y = player->y - player->height / 2;
-		space->addDynamicActor(player);
 		break;
 	}
 	case 'T': {
@@ -221,15 +229,15 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
-	case 'b': {
-		Recolectable* recolectable = new BombaRecolectable(x, y, game);
-		recolectable->y = recolectable->y - recolectable->height / 2;
-		recolectables.push_back(recolectable);
-		space->addDynamicActor(recolectable);
-		break;
-	}
-	case 'V': {
-		Recolectable* recolectable = new VidasRecolectable(x, y, game);
+	case 'r': {
+		int num = rand() % 2;
+		Recolectable* recolectable;
+
+		if(num == 0)
+			 recolectable = new BombaRecolectable(x, y, game);
+		else
+			recolectable = new VidasRecolectable(x, y, game);
+
 		recolectable->y = recolectable->y - recolectable->height / 2;
 		recolectables.push_back(recolectable);
 		space->addDynamicActor(recolectable);
@@ -249,6 +257,42 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
 		space->addStaticActor(tile);
+		break;
+	}
+	case 'i': {
+		if(player->items.size() + items.size() < 6){
+			int num = rand() % 6;
+
+			bool enLista = false;
+
+			for (auto const& i : player->items) {
+				enLista = (num == i->item) || enLista;
+			}
+
+			for (auto const& i : items) {
+				enLista = (num == i->item) || enLista;
+			}
+
+			while (enLista) {
+				num = rand() % 6;
+
+				enLista = false;
+				
+				for (auto const& i : player->items) {
+					enLista = (num == i->item) || enLista;
+				}
+
+				for (auto const& i : items) {
+					enLista = (num == i->item) || enLista;
+				}
+			}
+		
+			Item* item = new Item(x, y, num, game);
+			// modificación para empezar a contar desde el suelo.
+			item->y = item->y - item->height / 2;
+			items.push_back(item);
+			space->addDynamicActor(item);
+		}
 		break;
 	}
 	}
@@ -300,47 +344,48 @@ void GameLayer::processControls() {
 	player->orientacionDisparos = game->noDisparando;
 
 	if (controlShootUp) {
-		Projectile* newProjectile = player->shoot();
+		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationUp;
 
-		if (newProjectile != NULL) {
-			newProjectile->vx = 0;
-			newProjectile->vy = -10;
-			space->addDynamicActor(newProjectile);
-			projectiles.push_back(newProjectile);
+		for(auto const& p : newProjectiles){
+			p->vx = 0;
+			p->vy = -10;
+			space->addDynamicActor(p);
+			projectiles.push_back(p);
 		}
+		
 	} 
 	if (controlShootDown) {
-		Projectile* newProjectile = player->shoot();
+		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationBottom;
 		
-		if (newProjectile != NULL) {
-			newProjectile->vx = 0;
-			newProjectile->vy = 10;
-			space->addDynamicActor(newProjectile);
-			projectiles.push_back(newProjectile);
+		for (auto const& p : newProjectiles) {
+			p->vx = 0;
+			p->vy = 10;
+			space->addDynamicActor(p);
+			projectiles.push_back(p);
 		}
 	}
 	if (controlShootLeft) {
-		Projectile* newProjectile = player->shoot();
+		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationLeft;
 		
-		if (newProjectile != NULL) {
-			newProjectile->vx = -10;
-			newProjectile->vy = 0;
-			space->addDynamicActor(newProjectile);
-			projectiles.push_back(newProjectile);
+		for (auto const& p : newProjectiles) {
+			p->vx = -10;
+			p->vy = 0;
+			space->addDynamicActor(p);
+			projectiles.push_back(p);
 		}
 	}
 	if (controlShootRight) {
-		Projectile* newProjectile = player->shoot();
+		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationRight;
 
-		if (newProjectile != NULL) {
-			newProjectile->vx = 10;
-			newProjectile->vy = 0;
-			space->addDynamicActor(newProjectile);
-			projectiles.push_back(newProjectile);
+		for (auto const& p : newProjectiles) {
+			p->vx = 10;
+			p->vy = 0;
+			space->addDynamicActor(p);
+			projectiles.push_back(p);
 		}
 	}
 
@@ -376,79 +421,162 @@ void GameLayer::processControls() {
 }
 
 void GameLayer::update() {
+	list<Recolectable*> deleteRecolectables;
+	list<Item*> deleteItems;
 	list<Enemy*> deleteEnemies;
 
 	if (game->currentLevel == 0 && passed0) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
 		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
+		}
 	}
 	if (game->currentLevel == 1 && passed1) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
+		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
 		}
 	}
 	if (game->currentLevel == 2 && passed2) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
 		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
+		}
 	}
 	if (game->currentLevel == 3 && passed3) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
+		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
 		}
 	}
 	if (game->currentLevel == 4 && passed4) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
 		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
+		}
 	}
 	if (game->currentLevel == 5 && passed5) {
 		for(auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
+		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
 		}
 	}
 	if (game->currentLevel == 6 && passed6) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
 		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+		
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
+		}
 	}
 	if (game->currentLevel == 7 && passed7) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
+		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
 		}
 	}
 	if (game->currentLevel == 8 && passed8) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
 		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
+		}
 	}
 	if (game->currentLevel == 9 && passed9) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
+		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
 		}
 	}
 	if (game->currentLevel == 10 && passed10) {
 		for (auto const& enemy : enemies) {
 			deleteEnemies.push_back(enemy);
 		}
+
+		for (auto const& recolectable : recolectables) {
+			deleteRecolectables.push_back(recolectable);
+		}
+
+		for (auto const& item : items) {
+			deleteItems.push_back(item);
+		}
+
+		cup = new Tile("res/recolectables/copa.png", 620, 384, false, game);
+		// modificación para empezar a contar desde el suelo.
+		cup->y = cup->y - cup->height / 2;
+		space->addDynamicActor(cup); // Realmente no hace falta
 	}
 
 	if (pause) {
 		return;
 	}
-
-	// Nivel superado
-	/*if (cup->isOverlap(player)) {
-		game->currentLevel++;
-		if (game->currentLevel > game->finalLevel) {
-			game->currentLevel = 0;
-		}
-		message = new Actor("res/mensaje_ganar.png", WIDTH * 0.5, HEIGHT * 0.5,
-			WIDTH, HEIGHT, game);
-		pause = true;
-		init();
-	}*/
 	
 	space->update();
 	background->update();
@@ -503,6 +631,7 @@ void GameLayer::update() {
 
 	for (auto const& bomba : bombas) {
 		Explosion* newExplosion = bomba->explode();
+		
 		if (newExplosion != NULL) {
 			space->addDynamicActor(newExplosion);
 			explosiones.push_back(newExplosion);
@@ -516,7 +645,6 @@ void GameLayer::update() {
 			if (player->isOverlap(explosion)) {
 				player->loseLife(1);
 				if (player->lifes <= 0) {
-					player->deleteAnimations();
 					init();
 					return;
 				}
@@ -529,7 +657,6 @@ void GameLayer::update() {
 		if (player->isOverlap(enemy)) {
 			player->loseLife(enemy->daño);
 			if (player->lifes <= 0) {
-				player->deleteAnimations();
 				init();
 				return;
 			}
@@ -539,16 +666,46 @@ void GameLayer::update() {
 	for (auto const& puerta : puertas) {
 		if (player->isOverlap(puerta)) {
 			if(puerta->abierta){
+				if (game->currentLevel == 0) {
+					passed0 = true;
+				}
+				if (game->currentLevel == 1) {
+					passed1 = true;
+				}
+				if (game->currentLevel == 2) {
+					passed2 = true;
+				}
+				if (game->currentLevel == 3) {
+					passed3 = true;
+				}
+				if (game->currentLevel == 4) {
+					passed4 = true;
+				}
+				if (game->currentLevel == 5) {
+					passed5 = true;
+				}
+				if (game->currentLevel == 6) {
+					passed6 = true;
+				}
+				if (game->currentLevel == 7) {
+					passed7 = true;
+				}
+				if (game->currentLevel == 8) {
+					passed8 = true;
+				}
+				if (game->currentLevel == 9) {
+					passed9 = true;
+				}
+
 				game->currentLevel = puerta->siguienteNivel();
 				entrada = puerta->lado;
-				player->deleteAnimations();
 				init();
 				return;
 			}
 		}
 	}
 
-	list<Recolectable*> deleteRecolectables;
+	
 
 	// Colisiones
 	for (auto const& r : recolectables) {
@@ -570,13 +727,28 @@ void GameLayer::update() {
 		}
 	}
 
+	// Colisiones
+	for (auto const& i : items) {
+		if (player->isOverlap(i)) {
+
+			player->recogerItem(i);
+
+			bool pInList = std::find(deleteItems.begin(),
+				deleteItems.end(),
+				i) != deleteItems.end();
+
+			if (!pInList) {
+				deleteItems.push_back(i);
+			}
+		}
+	}
+
 	list<ProjectileEnemigo*> deleteProjectilesEnemigos;
 
 	for (auto const& projectile : projectilesEnemigos) {
 		if (player->isOverlap(projectile)) {
 			player->loseLife(1);
 			if (player->lifes <= 0) {
-				player->deleteAnimations();
 				init();
 				return;
 			}
@@ -611,33 +783,37 @@ void GameLayer::update() {
 	}
 
 	list<Enemy*> newEnemies;
-	
+
+	for (auto const& projectile : projectiles) {
+		if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0) || projectile->lifeCycle > 120) {
+
+			bool pInList = std::find(deleteProjectiles.begin(),
+				deleteProjectiles.end(),
+				projectile) != deleteProjectiles.end();
+
+			if (!pInList) {
+				deleteProjectiles.push_back(projectile);
+			}
+		}
+	}
+
 	for (auto const& enemy : enemies) {
 		for (auto const& projectile : projectiles) {
-			if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
-
-				bool pInList = std::find(deleteProjectiles.begin(),
-					deleteProjectiles.end(),
-					projectile) != deleteProjectiles.end();
-
-				if (!pInList) {
-					deleteProjectiles.push_back(projectile);
-				}
-			}
-
 			if (enemy->isOverlap(projectile)) {
-				bool pInList = std::find(deleteProjectiles.begin(),
-					deleteProjectiles.end(),
-					projectile) != deleteProjectiles.end();
+				if (enemy->state != game->stateDead && enemy->state != game->stateDying) {
+					bool pInList = std::find(deleteProjectiles.begin(),
+						deleteProjectiles.end(),
+						projectile) != deleteProjectiles.end();
 
-				if (!pInList) {
-					deleteProjectiles.push_back(projectile);
-				}
+					if (!pInList) {
+						deleteProjectiles.push_back(projectile);
+					}
 
-				Enemy* newEnemy = enemy->impacted();
+					Enemy* newEnemy = enemy->impacted();
 
-				if (newEnemy != NULL) {
-					newEnemies.push_back(newEnemy);
+					if (newEnemy != NULL) {
+						newEnemies.push_back(newEnemy);
+					}
 				}
 			}
 		}
@@ -659,6 +835,7 @@ void GameLayer::update() {
 		space->addDynamicActor(enemy);
 		enemies.push_back(enemy);
 	}
+	
 	newEnemies.clear();
 
 	for (auto const& tile : tiles) {
@@ -759,11 +936,11 @@ void GameLayer::update() {
 			bool eInList = std::find(deleteEnemies.begin(),
 				deleteEnemies.end(),
 				enemy) != deleteEnemies.end();
-
+		
 			if (!eInList) {
 				deleteEnemies.push_back(enemy);
 			}
-		}
+		}		
 	}
 
 	for (auto const& explosion : explosiones) {
@@ -816,7 +993,7 @@ void GameLayer::update() {
 
 	for (auto const& delTile : deleteTiles) {
 		tiles.remove(delTile);
-		space->removeDynamicActor(delTile);
+		space->removeStaticActor(delTile);
 		delete delTile;
 	}
 	deleteTiles.clear();
@@ -837,51 +1014,30 @@ void GameLayer::update() {
 	}
 	deleteBombas.clear();
 
+	for (auto const& delItem : deleteItems) {
+		items.remove(delItem);
+		space->removeDynamicActor(delItem);
+	}
+	deleteItems.clear();
+
 	textBombas->content = to_string(player->bombas);
 	textVidas->content = to_string(player->lifes);
 
 	if (enemies.size() == 0) {
 		for (auto const& puerta : puertas) {
 			puerta->abrir();
-		}
 
-		if (game->currentLevel == 0) {
-			passed0 = true;
-		}
-		if (game->currentLevel == 1) {
-			passed1 = true;
-		}
-		if (game->currentLevel == 2) {
-			passed2 = true;
-		}
-		if (game->currentLevel == 3) {
-			passed3 = true;
-		}
-		if (game->currentLevel == 4) {
-			passed4 = true;
-		}
-		if (game->currentLevel == 5) {
-			passed5 = true;
-		}
-		if (game->currentLevel == 6) {
-			passed6 = true;
-		}
-		if (game->currentLevel == 7) {
-			passed7 = true;
-		}
-		if (game->currentLevel == 8) {
-			passed8 = true;
-		}
-		if (game->currentLevel == 9) {
-			passed9 = true;
-		}
-		if (game->currentLevel == 10) {
-			passed10 = true;
+			if (game->currentLevel == 10) {
+				passed10 = true;
+			}
 		}
 	}
-	
-	vidasAntes = player->lifes;
-	bombasAntes = player->bombas;
+
+	if (projectiles.size() > 1100) {
+		for (int i = 0; i < 200; i++) {
+			projectiles.pop_front();
+		}
+	}
 }
 
 void GameLayer::calculateScroll() {
@@ -901,6 +1057,9 @@ void GameLayer::draw() {
 	for (auto const& puerta : puertas) {
 		puerta->draw(scrollX, scrollY);
 	}
+
+	player->draw(scrollX, scrollY);
+
 	for (auto const& projectile : projectilesEnemigos) {
 		projectile->draw(scrollX, scrollY);
 	}
@@ -908,8 +1067,8 @@ void GameLayer::draw() {
 		projectile->draw(scrollX, scrollY);
 	}
 	
-	//cup->draw(scrollX, scrollY);
-	player->draw(scrollX, scrollY);
+	if(cup != NULL)
+		cup->draw(scrollX, scrollY);
 
 	for (auto const& enemy : enemies) {
 		enemy->draw(scrollX, scrollY);
@@ -925,6 +1084,10 @@ void GameLayer::draw() {
 
 	for (auto const& bomba : bombas) {
 		bomba->draw(scrollX, scrollY);
+	}
+
+	for (auto const& item : items) {
+		item->draw(scrollX, scrollY);
 	}
 
 	backgroundVidas->draw();
