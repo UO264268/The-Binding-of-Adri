@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BombaRecolectable.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="CabezaJugador.h" />
     <ClInclude Include="Caca.h" />
     <ClInclude Include="CuerpoJugador.h" />
@@ -186,6 +187,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BombaRecolectable.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="CabezaJugador.cpp" />
     <ClCompile Include="Caca.cpp" />
     <ClCompile Include="CuerpoJugador.cpp" />

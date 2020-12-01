@@ -23,17 +23,17 @@ void GameLayer::init() {
 	audioBackground = new Audio("res/musica_ambiente.mp3", true);
 	audioBackground->play();
 
-	textVidas = new Text("hola", WIDTH * 0.92, HEIGHT * 0.05, game);
+	textVidas = new Text("hola", WIDTH * 0.08, HEIGHT * 0.05, game);
 	textVidas->content = to_string(0);
 
-	textBombas = new Text("hola", WIDTH * 0.8, HEIGHT * 0.05, game);
+	textBombas = new Text("hola", WIDTH * 0.17, HEIGHT * 0.05, game);
 	textBombas->content = to_string(0);
 	
 	background = new Background("res/mapeado/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, 0, game);
 	backgroundVidas = new Actor("res/recolectables/icono_vida.png",
-		WIDTH * 0.85, HEIGHT * 0.05, 39, 42, game);
+		WIDTH * 0.04, HEIGHT * 0.05, 39, 42, game);
 	backgroundBombas = new Actor("res/recolectables/icono_bomba.png",
-		WIDTH * 0.76, HEIGHT * 0.05, 39, 39, game);
+		WIDTH * 0.12, HEIGHT * 0.05, 39, 39, game);
 
 	for (auto const& puerta : puertas) {
 		puerta->deleteAnimations();
@@ -74,6 +74,7 @@ void GameLayer::init() {
 	puertas.clear();
 	recolectables.clear();
 	items.clear();
+	boss = NULL;
 
 	loadMap("res/mapas/" + to_string(game->currentLevel) + ".txt");
 }
@@ -294,6 +295,15 @@ void GameLayer::loadMapObject(char character, float x, float y)
 			space->addDynamicActor(item);
 		}
 		break;
+	}
+	case 'J': {
+		boss = new Boss(x, 420, game);
+		gut1 = new Actor("res/enemigos/moms_guts_1.png", x - 170, 140, 381, 138, game);
+		gut2 = new Actor("res/enemigos/moms_guts_2.png", x + 260, 150, 381, 153, game);
+		boss->y = boss->y - boss->height / 2;
+		gut1->y = gut1->y - gut1->height / 2;
+		gut2->y = gut2->y - gut2->height / 2;
+		space->addDynamicActor(boss);
 	}
 	}
 }
@@ -582,6 +592,8 @@ void GameLayer::update() {
 	background->update();
 	player->update();
 
+	
+
 	for (auto const& enemy : enemies) {
 		enemy->update(player->x, player->y);
 		
@@ -592,7 +604,6 @@ void GameLayer::update() {
 			projectilesEnemigos.push_back(newProjectile);
 		}
 
-		
 		Explosion* newExplosion = enemy->explode();
 
 		if (newExplosion != NULL) {
@@ -627,6 +638,61 @@ void GameLayer::update() {
 
 	for (auto const& explosion : explosiones) {
 		explosion->update();
+	}
+
+	list<Projectile*> deleteProjectiles;
+
+	if (boss != NULL) {
+		boss->update();
+
+		list<ProjectileEnemigo*> newProjectiles = boss->shoot();
+		list<Enemy*> newEnemies = boss->generarEnemigo();
+
+		for (auto const& p : newProjectiles) {
+			projectilesEnemigos.push_back(p);
+			space->addDynamicActor(p);
+		}
+
+		for (auto const& e : newEnemies) {
+			enemies.push_back(e);
+			space->addDynamicActor(e);
+		}
+
+		if (player->isOverlap(boss)) {
+			player->loseLife(2);
+			if (player->lifes <= 0) {
+				init();
+				return;
+			}
+		}
+
+		for (auto const& explosion : explosiones) {
+			if (!explosion->hitted) {
+				if (boss->isOverlap(explosion)) {
+					boss->impacted(1);
+				}
+			}
+		}
+
+		for (auto const& projectile : projectiles) {
+			if (boss->isOverlap(projectile)) {
+				boss->impacted(1);
+
+				bool pInList = std::find(deleteProjectiles.begin(),
+					deleteProjectiles.end(),
+					projectile) != deleteProjectiles.end();
+
+				if (!pInList) {
+					deleteProjectiles.push_back(projectile);
+				}
+			}
+		}
+
+		if (boss->state == game->stateDead) {
+			space->removeDynamicActor(boss);
+			delete boss;
+			boss = NULL;
+		}
 	}
 
 	for (auto const& bomba : bombas) {
@@ -765,7 +831,7 @@ void GameLayer::update() {
 
 	// Colisiones , Enemy - Projectile
 
-	list<Projectile*> deleteProjectiles;
+	
 	list<Tile*> deleteTiles;
 	list<Bomba*> deleteBombas;
 
@@ -1021,14 +1087,32 @@ void GameLayer::update() {
 	deleteItems.clear();
 
 	textBombas->content = to_string(player->bombas);
-	textVidas->content = to_string(player->lifes);
+	
+	int vidas = player->lifes;
+	int vidas_decimas = ((player->lifes - vidas) * 10);
+	
+	if(vidas_decimas > 0)
+		textVidas->content = to_string(vidas) + "." + to_string(vidas_decimas);
+	else
+		textVidas->content = to_string(vidas);
 
 	if (enemies.size() == 0) {
-		for (auto const& puerta : puertas) {
-			puerta->abrir();
-
-			if (game->currentLevel == 10) {
-				passed10 = true;
+		if (game->currentLevel == 0 && boss != NULL) {
+			if (boss->state == game->stateDead) {
+				for (auto const& puerta : puertas) {
+					puerta->abrir();
+				}
+			}
+		}else if (game->currentLevel == 10 && boss != NULL) {
+			if (boss->state == game->stateDead) {
+				for (auto const& puerta : puertas) {
+					puerta->abrir();
+				}
+			}
+		}
+		else {
+			for (auto const& puerta : puertas) {
+				puerta->abrir();
 			}
 		}
 	}
@@ -1072,6 +1156,12 @@ void GameLayer::draw() {
 
 	for (auto const& enemy : enemies) {
 		enemy->draw(scrollX, scrollY);
+	}
+
+	if (boss != NULL){
+		gut1->draw(scrollX, scrollY);
+		gut2->draw(scrollX, scrollY);
+		boss->draw(scrollX, scrollY);
 	}
 
 	for (auto const& recolectable : recolectables) {

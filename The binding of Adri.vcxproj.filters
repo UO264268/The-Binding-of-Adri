@@ -150,6 +150,9 @@
     <ClInclude Include="Item.h">
       <Filter>Archivos de encabezado\Actores\Recolectable</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Archivos de encabezado\Actores\Enemigos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -244,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="Item.cpp">
       <Filter>Archivos de origen\Actores\Recolectables</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Archivos de origen\Actores\Enemigos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

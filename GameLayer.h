@@ -22,6 +22,7 @@
 #include "Bomba.h"
 #include "Puerta.h"
 #include "Caca.h"
+#include "Boss.h"
 
 #include "Audio.h"
 #include "Space.h" // importar
@@ -29,7 +30,6 @@
 #include <fstream> // Leer ficheros
 #include <sstream> // Leer líneas / String
 #include <list>
-#include <exception>
 
 class GameLayer : public Layer
 {
@@ -65,6 +65,7 @@ public:
 	Background* background;
 	Actor* backgroundBombas;
 	Actor* backgroundVidas;
+	Boss* boss;
 	list<Enemy*> enemies;
 	list<Projectile*> projectiles;
 	list<ProjectileEnemigo*> projectilesEnemigos;
@@ -73,6 +74,8 @@ public:
 	list<Bomba*> bombas;
 	list<Puerta*> puertas;
 	list<Item*> items;
+	Actor* gut1;
+	Actor* gut2;
 
 	bool controlContinue = false;
 	bool controlShootUp = false;
