@@ -7,6 +7,9 @@ GameLayer::GameLayer(Game* game) //https://gyazo.com/17d61411a9793ae013f0b8820e8
 	message = new Actor("res/menu/controls.png", WIDTH * 0.5, HEIGHT * 0.5, WIDTH * 0.7, HEIGHT * 0.5,
 		game);
 
+	winMessage = new Actor("res/menu/mensaje_ganar.png", WIDTH * 0.5, HEIGHT * 0.5, WIDTH * 0.7, HEIGHT * 0.5,
+		game);
+
 	gamePad = SDL_GameControllerOpen(0);
 	init();
 }
@@ -297,13 +300,15 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		break;
 	}
 	case 'J': {
-		boss = new Boss(x, 486, game);
-		gut1 = new Actor("res/enemigos/moms_guts_1.png", x - 170, 140, 381, 138, game);
-		gut2 = new Actor("res/enemigos/moms_guts_2.png", x + 260, 150, 381, 153, game);
-		boss->y = boss->y - boss->height / 2;
-		gut1->y = gut1->y - gut1->height / 2;
-		gut2->y = gut2->y - gut2->height / 2;
-		space->addDynamicActor(boss);
+		if(!passed10){
+			boss = new Boss(x, 486, game);
+			gut1 = new Actor("res/enemigos/moms_guts_1.png", x - 170, 140, 381, 138, game);
+			gut2 = new Actor("res/enemigos/moms_guts_2.png", x + 260, 150, 381, 153, game);
+			boss->y = boss->y - boss->height / 2;
+			gut1->y = gut1->y - gut1->height / 2;
+			gut2->y = gut2->y - gut2->height / 2;
+			space->addDynamicActor(boss);
+		}
 	}
 	}
 }
@@ -584,6 +589,15 @@ void GameLayer::update() {
 		space->addDynamicActor(cup); // Realmente no hace falta
 	}
 
+	if (game->currentLevel != 10) {
+		space->removeDynamicActor(cup);
+		cup = NULL;
+	}
+
+	if (win && !pause) {
+		exit(0);
+	}
+	
 	if (pause) {
 		return;
 	}
@@ -592,7 +606,10 @@ void GameLayer::update() {
 	background->update();
 	player->update();
 
-	
+	if (cup != NULL && player->isOverlap(cup)) {
+		win = true;
+		pause = true;
+	}
 
 	for (auto const& enemy : enemies) {
 		enemy->update(player->x, player->y);
@@ -689,6 +706,7 @@ void GameLayer::update() {
 		}
 
 		if (boss->state == game->stateDead) {
+			passed10 = true;
 			space->removeDynamicActor(boss);
 			delete boss;
 			boss = NULL;
@@ -1186,8 +1204,12 @@ void GameLayer::draw() {
 	backgroundBombas->draw();
 	textBombas->draw();
 
-	if (pause) {
+	if (pause && !win) {
 		message->draw();
+	}
+
+	if (win) {
+		winMessage->draw();
 	}
 
 	SDL_RenderPresent(game->renderer); // Renderiza
@@ -1245,10 +1267,6 @@ void GameLayer::keysToControls(SDL_Event event) {
 	if (event.type == SDL_KEYDOWN) {
 		int code = event.key.keysym.sym;
 		
-		if (pause == true) {
-			pause = false;
-		}
-
 		// Pulsada
 		switch (code) {
 			case SDLK_ESCAPE:
@@ -1284,6 +1302,10 @@ void GameLayer::keysToControls(SDL_Event event) {
 			case SDLK_SPACE:
 				controlBomba = true;
 				break;
+		}
+
+		if (pause == true) {
+			pause = false;
 		}
 	}if (event.type == SDL_KEYUP) {
 		int code = event.key.keysym.sym;
@@ -1326,6 +1348,8 @@ void GameLayer::keysToControls(SDL_Event event) {
 				break;
 		}
 	}
+
+	
 }
 
 	

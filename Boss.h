@@ -27,7 +27,7 @@ public:
 	Animation* aStopped;
 
 	int vidas = 75;
-	int shootCadence = 3;
+	int shootCadence = 6;
 	int shootTime = 2;
 	int enemigoTime = 40;
 	int enemigoCadence = 300;

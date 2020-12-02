@@ -45,6 +45,7 @@ public:
 	void loadMapObject(char character, float x, float y);
 	void calculateScroll();
 	Actor* message;
+	Actor* winMessage;
 	bool pause;
 	// Elementos de interfaz
 	SDL_GameController* gamePad;
@@ -77,6 +78,7 @@ public:
 	Actor* gut1;
 	Actor* gut2;
 
+	bool win = false;
 	bool controlContinue = false;
 	bool controlShootUp = false;
 	bool controlShootDown = false;
