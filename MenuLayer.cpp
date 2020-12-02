@@ -9,12 +9,10 @@ MenuLayer::MenuLayer(Game* game)
 void MenuLayer::init() {
 	// Fondo normal, sin velocidad
 	background = new Background("res/menu/menu_fondo.png", WIDTH * 0.5, HEIGHT * 0.5, game);
-	button = new Actor("res/menu/boton_jugar.png", WIDTH * 0.5, HEIGHT * 0.7, 232, 72, game);
 }
 
 void MenuLayer::draw() {
 	background->draw();
-	button->draw();
 
 	SDL_RenderPresent(game->renderer); // Renderiza NO PUEDE FALTAR
 }
