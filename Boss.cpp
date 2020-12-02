@@ -1,11 +1,12 @@
 #include "Boss.h"
 
 Boss::Boss(float x, float y, Game* game)
-	: Actor("res/enemigos/boss.png", x, y, 296, 420, game) {
+	: Actor("res/enemigos/boss.png", x, y, 213, 486, game) {
 	state = game->stateMoving;
 
-	aMoving = new Animation("res/enemigos/boss.png", width, height, 560, 122, 3, 5, true, game);
+	aMoving = new Animation("res/enemigos/boss.png", width, height, 430, 120, 2, 5, false, game);
 	aHitted = new Animation("res/enemigos/boss_hitted.png", width, height, 112, 128, 3, 1, false, game);
+	aStopped = new Animation("res/enemigos/boss1.png", width, height, 86, 120, 3, 1, false, game);
 	
 	animation = aMoving;
 }
@@ -26,11 +27,21 @@ void Boss::update() {
 		if (state == game->stateHitted) {
 			state = game->stateMoving;
 		}
+
+		if (state == game->stateMoving) {
+			if (animationTime == 0) {
+				aMoving->currentFrame = 0;
+				animation = aMoving;
+				animationTime = animationCd;
+			}
+			else {
+				aStopped->currentFrame = 0;
+				animation = aStopped;
+				animationTime--;
+			}
+		}
 	}
 
-	if (state == game->stateMoving) {
-		animation = aMoving;
-	}
 	if (state == game->stateDying) {
 		animation = aHitted;
 	}
@@ -51,7 +62,7 @@ list<ProjectileEnemigo*> Boss::shoot() {
 	list<ProjectileEnemigo*> projectiles;
 
 	if (shootTime == 0) {
-		cicloDisparos += 12;
+		cicloDisparos += 11;
 
 		shootTime = shootCadence;
 
@@ -64,17 +75,16 @@ list<ProjectileEnemigo*> Boss::shoot() {
 
 		ProjectileEnemigo* projectile1 = new ProjectileEnemigo(x, y, vx * -1, vy * -1, game);
 		ProjectileEnemigo* projectile2 = new ProjectileEnemigo(x, y, vx, vy, game);
-		/*ProjectileEnemigo* projectile = new ProjectileEnemigo(x, y, vx, vy, game);
-		ProjectileEnemigo* projectile = new ProjectileEnemigo(x, y, vx, vy, game);*/
+		ProjectileEnemigo* projectile3 = new ProjectileEnemigo(x, y, vx * -1, vy, game);
+		ProjectileEnemigo* projectile4 = new ProjectileEnemigo(x, y, vx, vy * -1, game);
 
 		projectiles.push_back(projectile1);
 		projectiles.push_back(projectile2);
+		projectiles.push_back(projectile3);
+		projectiles.push_back(projectile4);
 
-		if (cicloDisparos == 360)
-			cicloDisparos = 0;
-
-		if (rand() % 50 == 0)
-			shootTime = rand() % 300;
+		if (rand() % 100 == 0)
+			shootTime = rand() % 100;
 	}
 
 	return projectiles;

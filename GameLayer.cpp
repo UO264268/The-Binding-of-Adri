@@ -297,7 +297,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		break;
 	}
 	case 'J': {
-		boss = new Boss(x, 420, game);
+		boss = new Boss(x, 486, game);
 		gut1 = new Actor("res/enemigos/moms_guts_1.png", x - 170, 140, 381, 138, game);
 		gut2 = new Actor("res/enemigos/moms_guts_2.png", x + 260, 150, 381, 153, game);
 		boss->y = boss->y - boss->height / 2;

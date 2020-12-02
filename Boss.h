@@ -24,13 +24,17 @@ public:
 	Animation* aMoving;
 	Animation* animation;
 	Animation* aHitted;
+	Animation* aStopped;
 
-	int vidas = 50;
+	int vidas = 75;
 	int shootCadence = 3;
 	int shootTime = 2;
 	int enemigoTime = 40;
-	int enemigoCadence = 400;
+	int enemigoCadence = 300;
 	float daño = 1;
+
+	int animationCd = 6;
+	int animationTime = 6;
 
 	int cicloDisparos = 0;
 };
