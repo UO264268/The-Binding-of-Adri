@@ -1284,44 +1284,42 @@ void GameLayer::gamePadToControls(SDL_Event event) {
 	bool buttonB = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_B);
 	bool buttonX = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_X);
 	bool buttonY = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_Y);
-	// SDL_CONTROLLER_BUTTON_A, SDL_CONTROLLER_BUTTON_B
-	// SDL_CONTROLLER_BUTTON_X, SDL_CONTROLLER_BUTTON_Y
-	cout << "botones:" << buttonA << "," << buttonB << endl;
+	bool buttonDown = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+	bool buttonRight = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+	bool buttonLeft = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+	bool buttonUp = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_DPAD_UP);
+	bool buttonBomba = SDL_GameControllerGetButton(gamePad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
 	int stickX = SDL_GameControllerGetAxis(gamePad, SDL_CONTROLLER_AXIS_LEFTX);
 	int stickY = SDL_GameControllerGetAxis(gamePad, SDL_CONTROLLER_AXIS_LEFTY);
-	cout << "stickX" << stickX << endl;
 
 	// Retorna aproximadamente entre [-32800, 32800], el centro debería estar en 0
 	// Si el mando tiene "holgura" el centro varia [-4000 , 4000]
-	if (stickX > 4000) {
+	if (stickX > 4000 || buttonRight) {
 		controlMoveX = 1;
-	} else if (stickX < -4000) {
+	} else if (stickX < -4000 || buttonLeft) {
 		controlMoveX = -1;
 	} else {
 		controlMoveX = 0;
 	}
 
-	if (stickY > 4000) {
+	if (stickY > 4000 || buttonDown) {
 		controlMoveY = 1;
-	} else if (stickY < -4000) {
+	} else if (stickY < -4000 || buttonUp) {
 		controlMoveY = -1;
 	} else {
 		controlMoveY = 0;
 	}
 
-	if (buttonY) {
-		controlShootUp = true;
-	} else if (buttonA) {
-		controlShootDown = true;
-	} else if (buttonX) {
-		controlShootLeft = true;
-	} else if (buttonB) {
-		controlShootRight = true;
-	} else {
-		controlShootRight = false;
-		controlShootLeft = false;
-		controlShootDown = false;
-		controlShootUp = false;
+	controlShootUp = buttonY;
+	controlShootDown = buttonA;
+	controlShootLeft = buttonX; 
+	controlShootRight = buttonB;
+	controlBomba = buttonBomba;
+	
+	if (buttonY || buttonX || buttonB || stickY != 0 || stickX != 0 || buttonDown || buttonUp || buttonLeft || buttonRight) {
+		if (pause == true) {
+			pause = false;
+		}
 	}
 }
 

@@ -36,9 +36,8 @@ void CabezaJugador::update(int orientacionDisparos) {
 		animacion = dispararDerecha;
 	}
 
-	if (shootTime > 0) {
-		shootTime--;
-	}
+	shootTime--;
+	
 }
 
 void CabezaJugador::moveX(float axis) {
@@ -52,7 +51,7 @@ void CabezaJugador::moveY(float axis) {
 list<Projectile*> CabezaJugador::shoot(bool tripleShoot, bool doubleShoot, bool brimstone) {
 	list<Projectile*> projectiles;
 
-	if (brimstone || shootTime == 0) {
+	if (brimstone || shootTime < 0) {
 		if (doubleShoot & tripleShoot) {
 			if (orientacion == game->orientationBottom || orientacion == game->orientationUp) {
 				Projectile* projectile1 = new Projectile(x - 20, y, game);
