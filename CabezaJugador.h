@@ -24,8 +24,6 @@ public:
 
 	Animation* animacion;
 
-	Audio* audioShoot;
-
 	int orientacion;
 
 	int shootCadence = 20;

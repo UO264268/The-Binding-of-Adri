@@ -78,6 +78,22 @@ public:
 	Actor* gut1;
 	Actor* gut2;
 
+	Audio* audioShoot;
+	Audio* audioRecogerVida;
+	Audio* audioRecogerBomba;
+	Audio* audioPuertaAbriendose;
+	Audio* audioPuertaCerrandose;
+	Audio* audioExplosion;
+	Audio* audioBoss;
+
+	Audio* audioRoca;
+	Audio* audioCaca;
+	Audio* audioEnemigo;
+	Audio* audioMosca;
+	Audio* audioMuerteIsaac;
+	Audio* audioIsaacHitted;
+	Audio* audioCogerItem;
+
 	bool win = false;
 	bool controlContinue = false;
 	bool controlShootUp = false;
@@ -103,5 +119,8 @@ public:
 	bool passed10 = false;
 
 	int entrada = 0;
+
+	int cdSonidoDisparo = 10;
+	int sonidoDisparoTime = 0;
 };
 

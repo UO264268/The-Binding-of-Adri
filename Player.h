@@ -13,7 +13,7 @@
 class Player : public Actor
 {
 public:
-	Player(float x, float y, Game* game);
+	Player(float x, float y, Audio* audioDaño, Audio* audioMuerte, Game* game);
 	
 	list<Projectile*> shoot();
 	void update();
@@ -33,6 +33,10 @@ public:
 	
 	CabezaJugador* cabezaJugador;
 	CuerpoJugador* cuerpoJugador;
+
+
+	Audio* audioMuerte;
+	Audio* audioDaño;
 
 	list<Item*> items;
 

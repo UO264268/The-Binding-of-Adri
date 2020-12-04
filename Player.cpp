@@ -1,11 +1,14 @@
 #include "Player.h"
 
-Player::Player(float x, float y, Game* game)
+Player::Player(float x, float y, Audio* audioDaño, Audio* audioMuerte, Game* game)
 	: Actor("res/jugador.png", x, y, 48, 23, game) {
 
 	cabezaJugador = new CabezaJugador(x, y-20, game);
 	cuerpoJugador = new CuerpoJugador(x, y, game);
 	
+	this->audioDaño = audioDaño;
+	this->audioMuerte = audioMuerte;
+
 	orientacionCaminar = game->orientationBottom;
 	orientacionDisparos = game->orientationBottom;
 	state = game->stateMoving;
@@ -80,6 +83,7 @@ void Player::loseLife(float damage) {
 	if (invulnerableTime <= 0) {
 		if ((lifes-damage) > 0) {
 			lifes = lifes - damage;
+			audioDaño->play();
 		}
 		else {
 			lifes = 0;
@@ -90,8 +94,10 @@ void Player::loseLife(float damage) {
 
 		if (collar_guppy && lifes == 0) {
 			lifes = rand() % 2;
+		}
 
-			cout << "Vidas: " << lifes << endl;
+		if (lifes == 0) {
+			audioMuerte->play();
 		}
 	}
 }

@@ -6,20 +6,23 @@
 #include "Enemy.h"
 #include "EnemigoBasico.h"
 #include "EnemigoSinCabeza.h"
+#include "Audio.h"
 #include <list>
 #include <math.h>
 
 class Boss : public Actor
 {
 public:
-	Boss(float x, float y, Game* game);
+	Boss(float x, float y, Audio* boss, Game* game);
 	void draw(float scrollX = 0, float scrollY = 0) override;
 	void update();
 	list<ProjectileEnemigo*> shoot();
-	list<Enemy*> generarEnemigo();
+	list<Enemy*> generarEnemigo(Audio* audio);
 	void impacted(int damage);
 
 	int state;
+
+	Audio* audio;
 
 	Animation* aMoving;
 	Animation* animation;

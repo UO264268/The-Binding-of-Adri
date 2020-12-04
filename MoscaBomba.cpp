@@ -1,6 +1,6 @@
 #include "MoscaBomba.h"
 
-MoscaBomba::MoscaBomba(float x, float y, Game* game)
+MoscaBomba::MoscaBomba(float x, float y, Audio* audioMosca, Game* game)
 	: Enemy("res/enemigo.png", x, y, 48, 48, game) {
 
 	state = game->stateMoving;
@@ -11,6 +11,8 @@ MoscaBomba::MoscaBomba(float x, float y, Game* game)
 	aMoving = new Animation("res/enemigos/mosca_bomba.png", width, height,
 		64, 32, 6, 2, true, game);
 	animation = aMoving;
+
+	this->audioMosca = audioMosca;
 
 	vx = 0;
 	vy = 0;
@@ -26,7 +28,6 @@ MoscaBomba::MoscaBomba(float x, float y, Game* game)
 }
 
 void MoscaBomba::deleteAnimations() {
-	
 	delete aHitted;
 	delete aShooting;
 	delete aMoving;
@@ -36,6 +37,13 @@ void MoscaBomba::deleteAnimations() {
 void MoscaBomba::update(float xPlayer, float yPlayer) {
 	// Actualizar la animación
 	bool endAnimation = animation->update();
+
+	audioTime--;
+
+	if(audioTime < 0){
+		audioMosca->play();
+		audioTime = audioCadence;
+	}
 
 	// Acabo la animación, no sabemos cual
 	if (endAnimation) {

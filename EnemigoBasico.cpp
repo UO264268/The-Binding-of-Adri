@@ -1,6 +1,6 @@
 #include "EnemigoBasico.h"
 
-EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
+EnemigoBasico::EnemigoBasico(float x, float y, Audio* audio, Game* game)
 	: Enemy("res/enemigo.png", x, y, 48, 23, game) {
 
 	state = game->stateMoving;
@@ -32,6 +32,8 @@ EnemigoBasico::EnemigoBasico(float x, float y, Game* game)
 	animationCuerpo = movimientoX;
 	animationCabeza = aCabeza;
 
+	this->audio = audio;
+
 	vx = 1;
 	vy = 0;
 	
@@ -50,6 +52,13 @@ void EnemigoBasico::update(float xPlayer, float yPlayer) {
 	bool endAnimation = animationCuerpo->update();
 	animationCabeza->update();
 	sangre->update();
+
+	audioTime--;
+
+	if (audioTime < 0) {
+		audio->play();
+		audioTime = audioCadence;
+	}
 
 	// Acabo la animación, no sabemos cual
 	if (endAnimation) {

@@ -2,7 +2,6 @@
 
 CabezaJugador::CabezaJugador(float x, float y, Game* game)
 	: Actor("res/player/cabeza.png", x, y, 43, 27, game) {
-	audioShoot = new Audio("res/efecto_disparo.wav", false);
 
 	dispararDerecha = new Animation("res/player/isaac_cabeza_disparando_derecha.png", width, height,
 		58, 25, 10, 2, true, game);
@@ -54,7 +53,6 @@ list<Projectile*> CabezaJugador::shoot(bool tripleShoot, bool doubleShoot, bool 
 	list<Projectile*> projectiles;
 
 	if (brimstone || shootTime == 0) {
-
 		if (doubleShoot & tripleShoot) {
 			if (orientacion == game->orientationBottom || orientacion == game->orientationUp) {
 				Projectile* projectile1 = new Projectile(x - 20, y, game);
@@ -86,7 +84,6 @@ list<Projectile*> CabezaJugador::shoot(bool tripleShoot, bool doubleShoot, bool 
 
 		}
 		else if(tripleShoot){
-			audioShoot->play();
 			shootTime = shootCadence;
 			
 			if (orientacion == game->orientationBottom || orientacion == game->orientationUp) {
@@ -130,6 +127,7 @@ list<Projectile*> CabezaJugador::shoot(bool tripleShoot, bool doubleShoot, bool 
 			Projectile* projectile = new Projectile(x, y, game);
 			projectiles.push_back(projectile);
 		}
+		
 		shootTime = shootCadence;
 	}
 

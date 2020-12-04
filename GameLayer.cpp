@@ -11,6 +11,25 @@ GameLayer::GameLayer(Game* game) //https://gyazo.com/17d61411a9793ae013f0b8820e8
 		game);
 
 	gamePad = SDL_GameControllerOpen(0);
+
+	audioBackground = new Audio("res/sonidos/main_theme.mp3", true);
+	//daudioBackground->play();
+
+	audioShoot = new Audio("res/sonidos/tear_fire.wav", false);
+	audioRecogerVida = new Audio("res/sonidos/heart_pick.wav", false);
+	audioRecogerBomba = new Audio("res/sonidos/bomb_pick.wav", false);
+	audioPuertaAbriendose = new Audio("res/sonidos/door_open.wav", false);
+	audioPuertaCerrandose = new Audio("res/sonidos/door_close.wav", false);
+	audioExplosion = new Audio("res/sonidos/explosion.wav", false);
+	audioBoss = new Audio("res/sonidos/heartbeat.wav", false);
+	audioMuerteIsaac = new Audio("res/sonidos/isaac_dies.wav", false);
+	audioIsaacHitted = new Audio("res/sonidos/isaac_hurt.wav", false);
+	audioCogerItem = new Audio("res/sonidos/item_pick.wav", false);
+	audioEnemigo = new Audio("res/sonidos/zombie_walke_kid.wav", false);
+	audioMosca = new Audio("res/sonidos/insect_swarm.wav", false);
+	audioRoca = new Audio("res/sonidos/rock_crumble.wav", false);
+	audioCaca = new Audio("res/sonidos/plop.wav", false);
+		
 	init();
 }
 
@@ -22,10 +41,7 @@ void GameLayer::init() {
 	scrollX = 0;
 	scrollY = 0;
 	tiles.clear();
-
-	audioBackground = new Audio("res/musica_ambiente.mp3", true);
-	audioBackground->play();
-
+	
 	textVidas = new Text("hola", WIDTH * 0.08, HEIGHT * 0.05, game);
 	textVidas->content = to_string(0);
 
@@ -46,7 +62,7 @@ void GameLayer::init() {
 	space->removeDynamicActor(player);
 
 	if (player == NULL) {
-		player = new Player(620, 384, game);
+		player = new Player(620, 384, audioIsaacHitted, audioMuerteIsaac, game);
 	}
 	else {
 		if (entrada == game->puertaAbajo) {
@@ -64,7 +80,7 @@ void GameLayer::init() {
 
 		if (player->lifes == 0) {
 			game->currentLevel = 0;
-			player = new Player(620, 384, game);
+			player = new Player(620, 384, audioIsaacHitted, audioMuerteIsaac, game);
 		}
 	}
 
@@ -79,6 +95,7 @@ void GameLayer::init() {
 	items.clear();
 	boss = NULL;
 
+	audioPuertaCerrandose->play();
 	loadMap("res/mapas/" + to_string(game->currentLevel) + ".txt");
 }
 
@@ -120,7 +137,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		int num = rand() % 4;
 
 		if (num == 0) {
-			enemy = new EnemigoBasico(x, y, game);
+			enemy = new EnemigoBasico(x, y, audioEnemigo, game);
 		}
 		else if (num == 1) {
 			enemy = new EnemigoSinCabeza(x, y, game);
@@ -129,7 +146,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 			enemy = new EnemigoDispara(x, y, game);
 		}
 		else if (num == 3) {
-			enemy = new MoscaBomba(x, y, game);
+			enemy = new MoscaBomba(x, y, audioMosca, game);
 		}
 
 		// modificación para empezar a contar desde el suelo.
@@ -301,7 +318,7 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	}
 	case 'J': {
 		if(!passed10){
-			boss = new Boss(x, 486, game);
+			boss = new Boss(x, 486, audioBoss, game);
 			gut1 = new Actor("res/enemigos/moms_guts_1.png", x - 170, 140, 381, 138, game);
 			gut2 = new Actor("res/enemigos/moms_guts_2.png", x + 260, 150, 381, 153, game);
 			boss->y = boss->y - boss->height / 2;
@@ -312,7 +329,6 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	}
 	}
 }
-
 
 void GameLayer::processControls() {
 	// obtener controles
@@ -362,6 +378,11 @@ void GameLayer::processControls() {
 		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationUp;
 
+		if (newProjectiles.size() > 0 && sonidoDisparoTime < 0) {
+			audioShoot->play();
+			sonidoDisparoTime = cdSonidoDisparo;
+		}
+
 		for(auto const& p : newProjectiles){
 			p->vx = 0;
 			p->vy = -10;
@@ -373,6 +394,11 @@ void GameLayer::processControls() {
 	if (controlShootDown) {
 		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationBottom;
+
+		if (newProjectiles.size() > 0 && sonidoDisparoTime < 0) {
+			audioShoot->play();
+			sonidoDisparoTime = cdSonidoDisparo;
+		}
 		
 		for (auto const& p : newProjectiles) {
 			p->vx = 0;
@@ -384,6 +410,11 @@ void GameLayer::processControls() {
 	if (controlShootLeft) {
 		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationLeft;
+
+		if (newProjectiles.size() > 0 && sonidoDisparoTime < 0) {
+			audioShoot->play();
+			sonidoDisparoTime = cdSonidoDisparo;
+		}
 		
 		for (auto const& p : newProjectiles) {
 			p->vx = -10;
@@ -395,6 +426,11 @@ void GameLayer::processControls() {
 	if (controlShootRight) {
 		list<Projectile*> newProjectiles = player->shoot();
 		player->orientacionDisparos = game->orientationRight;
+
+		if (newProjectiles.size() > 0 && sonidoDisparoTime < 0) {
+			audioShoot->play();
+			sonidoDisparoTime = cdSonidoDisparo;
+		}
 
 		for (auto const& p : newProjectiles) {
 			p->vx = 10;
@@ -439,6 +475,12 @@ void GameLayer::update() {
 	list<Recolectable*> deleteRecolectables;
 	list<Item*> deleteItems;
 	list<Enemy*> deleteEnemies;
+	list<Projectile*> deleteProjectiles;
+	list<ProjectileEnemigo*> deleteProjectilesEnemigos;
+	list<Tile*> deleteTiles;
+	list<Bomba*> deleteBombas;
+
+	sonidoDisparoTime--;
 
 	if (game->currentLevel == 0 && passed0) {
 		for (auto const& enemy : enemies) {
@@ -626,6 +668,7 @@ void GameLayer::update() {
 		if (newExplosion != NULL) {
 			deleteEnemies.push_back(enemy);
 			
+			audioExplosion->play();
 			space->addDynamicActor(newExplosion);
 			explosiones.push_back(newExplosion);
 		}	
@@ -639,6 +682,7 @@ void GameLayer::update() {
 	}
 	deleteEnemies.clear();
 
+	//updates
 	for (auto const& projectile : projectiles) {
 		projectile->update();
 	}
@@ -648,22 +692,17 @@ void GameLayer::update() {
 	for (auto const& recolectable : recolectables) {
 		recolectable->update();
 	}
-
 	for (auto const& bomba : bombas) {
 		bomba->update();
 	}
-
 	for (auto const& explosion : explosiones) {
 		explosion->update();
 	}
-
-	list<Projectile*> deleteProjectiles;
-
 	if (boss != NULL) {
 		boss->update();
 
 		list<ProjectileEnemigo*> newProjectiles = boss->shoot();
-		list<Enemy*> newEnemies = boss->generarEnemigo();
+		list<Enemy*> newEnemies = boss->generarEnemigo(audioEnemigo);
 
 		for (auto const& p : newProjectiles) {
 			projectilesEnemigos.push_back(p);
@@ -717,6 +756,7 @@ void GameLayer::update() {
 		Explosion* newExplosion = bomba->explode();
 		
 		if (newExplosion != NULL) {
+			audioExplosion->play();
 			space->addDynamicActor(newExplosion);
 			explosiones.push_back(newExplosion);
 		}
@@ -789,16 +829,16 @@ void GameLayer::update() {
 		}
 	}
 
-	
-
 	// Colisiones
 	for (auto const& r : recolectables) {
 		if (player->isOverlap(r)) {
 
 			if (r->recoger() == game->bomba) {
 				player->bombas++;
+				audioRecogerBomba->play();
 			}if (r->recoger() == game->corazon) {
 				player->lifes++;
+				audioRecogerVida->play();
 			}
 
 			bool pInList = std::find(deleteRecolectables.begin(),
@@ -816,6 +856,7 @@ void GameLayer::update() {
 		if (player->isOverlap(i)) {
 
 			player->recogerItem(i);
+			audioCogerItem->play();
 
 			bool pInList = std::find(deleteItems.begin(),
 				deleteItems.end(),
@@ -826,8 +867,6 @@ void GameLayer::update() {
 			}
 		}
 	}
-
-	list<ProjectileEnemigo*> deleteProjectilesEnemigos;
 
 	for (auto const& projectile : projectilesEnemigos) {
 		if (player->isOverlap(projectile)) {
@@ -848,10 +887,6 @@ void GameLayer::update() {
 	}
 
 	// Colisiones , Enemy - Projectile
-
-	
-	list<Tile*> deleteTiles;
-	list<Bomba*> deleteBombas;
 
 	for (auto const& projectile : projectilesEnemigos) {
 		if (projectile->isInRender(scrollX, scrollY) == false || (projectile->vx == 0 && projectile->vy == 0)) {
@@ -922,10 +957,15 @@ void GameLayer::update() {
 	
 	newEnemies.clear();
 
+	bool sonidoRoca = false;
+	bool sonidoCaca = false;
+
 	for (auto const& tile : tiles) {
 		for (auto const& projectile : projectiles) {
 			if (tile->isOverlap(projectile) && tile->destructibleByShoot) {
 				((Caca*)tile)->perderVida();
+
+				sonidoCaca = true;
 
 				if (((Caca*)tile)->vida == 0) {
 					bool pInList = std::find(deleteTiles.begin(),
@@ -965,6 +1005,8 @@ void GameLayer::update() {
 		for (auto const& explosion : explosiones) {
 			if (!explosion->hitted && tile->isOverlap(explosion)) {
 				if (tile->desctructibleByBomb) {
+					sonidoRoca = true;
+					
 					bool pInList = std::find(deleteTiles.begin(),
 						deleteTiles.end(),
 						tile) != deleteTiles.end();
@@ -975,6 +1017,14 @@ void GameLayer::update() {
 				}
 			}
 		}
+	}
+
+	if (sonidoCaca) {
+		audioCaca->play();
+	}
+
+	if (sonidoRoca) {
+		audioRoca->play();
 	}
 
 	for (auto const& puerta : puertas) {
@@ -1054,10 +1104,12 @@ void GameLayer::update() {
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
 		space->removeDynamicActor(delProjectile);
+		
 		delProjectile->deleteAnimations();
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
+
 
 	for (auto const& delProjectile : deleteProjectilesEnemigos) {
 		projectilesEnemigos.remove(delProjectile);
@@ -1113,25 +1165,35 @@ void GameLayer::update() {
 		textVidas->content = to_string(vidas) + "." + to_string(vidas_decimas);
 	else
 		textVidas->content = to_string(vidas);
-
+	
 	if (enemies.size() == 0) {
+		bool sonido = false;
+
 		if (game->currentLevel == 0 && boss != NULL) {
 			if (boss->state == game->stateDead) {
 				for (auto const& puerta : puertas) {
+					sonido = !puerta->abierta;
 					puerta->abrir();
 				}
 			}
-		}else if (game->currentLevel == 10 && boss != NULL) {
+		}
+		else if (game->currentLevel == 10 && boss != NULL) {
 			if (boss->state == game->stateDead) {
 				for (auto const& puerta : puertas) {
+					sonido = !puerta->abierta;
 					puerta->abrir();
 				}
 			}
 		}
 		else {
 			for (auto const& puerta : puertas) {
+				sonido = !puerta->abierta;
 				puerta->abrir();
 			}
+		}
+
+		if (sonido) {
+			audioPuertaAbriendose->play();
 		}
 	}
 

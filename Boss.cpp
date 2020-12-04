@@ -1,12 +1,14 @@
 #include "Boss.h"
 
-Boss::Boss(float x, float y, Game* game)
+Boss::Boss(float x, float y, Audio* audio, Game* game)
 	: Actor("res/enemigos/boss.png", x, y, 213, 486, game) {
 	state = game->stateMoving;
 
 	aMoving = new Animation("res/enemigos/boss.png", width, height, 430, 120, 2, 5, false, game);
 	aHitted = new Animation("res/enemigos/boss_hitted.png", width, height, 112, 128, 3, 1, false, game);
 	aStopped = new Animation("res/enemigos/boss1.png", width, height, 86, 120, 3, 1, false, game);
+
+	this->audio = audio;
 	
 	animation = aMoving;
 }
@@ -33,6 +35,7 @@ void Boss::update() {
 				aMoving->currentFrame = 0;
 				animation = aMoving;
 				animationTime = animationCd;
+				audio->play();
 			}
 			else {
 				aStopped->currentFrame = 0;
@@ -90,7 +93,7 @@ list<ProjectileEnemigo*> Boss::shoot() {
 	return projectiles;
 }
 
-list<Enemy*> Boss::generarEnemigo() {
+list<Enemy*> Boss::generarEnemigo(Audio* audio) {
 	list<Enemy*> enemigos;
 
 	if (enemigoTime == 0) {
@@ -111,7 +114,7 @@ list<Enemy*> Boss::generarEnemigo() {
 			else {
 				int distanciax = (rand() % 500 + 300) * rand() % 3 - 1;
 				int distanciay = (rand() % 500 + 300) * rand() % 3 - 1;
-				enemigo = new EnemigoBasico(x + distanciax, y + distanciay, game);
+				enemigo = new EnemigoBasico(x + distanciax, y + distanciay, audio, game);
 			}
 
 			enemigos.push_back(enemigo);
